@@ -1,0 +1,34 @@
+<volist name="lists" id="list">
+	<div class="order_list_item">
+		<a href="{:U('/Mobile/User/order_detail',array('id'=>$list['order_id']))}">
+		<div class="top">
+			<span class="f22 gray_color left">订单编号:{$list.order_sn}</span>
+			<span class="f22 o_color right">{$list.order_status_desc}</span>
+		</div>
+		<volist name="list.goods_list" id="good">
+			<div class="middel order_style">
+				<div class="good_img"><img src="{$good.goods_id|goods_thum_images=200,200}"></div>
+				<div class="good_con">
+					<p class="f24 good_name">{$good.goods_name}</p>
+					<div class="good_price f24 o_color">
+						¥{$good['member_goods_price']}
+					</div>
+					<div class="good_tip gray_color f22">
+						{$good.spec_key_name}
+					</div>
+				</div>	
+			</div>
+		</volist>
+		</a>
+		<div class="bottom">
+			<div class="left f22">共{$list.goods_list|count}件商品 应付:<span class="o_color">¥<span class="f28 o_color">{$list['order_amount']}</span></span></div>
+			<div class="right">
+				<if condition="$list.pay_btn eq 1"><a href="{:U('Mobile/Cart/cart4',array('order_id'=>$list['order_id']))}" class="order_o_btn f22">立即支付</a></if>
+				<if condition="$list.cancel_btn eq 1"><a href="javascript:void(0);"  onClick="cancel_order({$list.order_id})" class="order_g_btn f22">取消订单</a></if>
+				<if condition="$list.receive_btn eq 1"><a href="{:U('Mobile/User/order_confirm',array('id'=>$list['order_id']))}" class="order_o_btn f22">确认收货</a></if>
+				<if condition="$list.comment_btn eq 1"><a href="{:U('/Mobile/User/comment')}" class="order_o_btn f22" >评价</a></if>
+				<if condition="$list.shipping_btn eq 1"><a href="{:U('User/express',array('order_id'=>$list['order_id']))}" class="order_o_btn f22" >查看物流</a></if>
+			</div>
+		</div>
+	</div>
+</volist>

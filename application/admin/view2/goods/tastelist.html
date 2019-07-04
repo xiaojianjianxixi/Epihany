@@ -1,0 +1,173 @@
+<include file="public/layout" />
+<script type="text/javascript" src="__ROOT__/public/static/js/layer/laydate/laydate.js"></script>
+
+<body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+	<div id="append_parent"></div>
+	<div id="ajaxwaitid"></div>
+	<div class="page" style="padding:10px">
+		<div class="flexigrid">
+			<div class="mDiv">
+				<div class="fbutton">
+					<div class="add" title="添加商品">
+						<span onclick="addtastelist()">
+							<i class="fa fa-plus"></i>添加口味</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="hDiv">
+				<div class="hDivBox" id="ajax_return">
+					<table cellspacing="0" cellpadding="0" id="table_head">
+						<thead>
+							<tr>
+								<th class="sign" axis="col0">
+									<div style="width: 24px;">
+										<i class="ico-check"></i>
+									</div>
+								</th>
+								<th align="left" abbr="order_sn" axis="col3" class="">
+									<div style="text-align: left;" class="">名字</div>
+								</th>
+								<th align="center" abbr="article_time" axis="col6" class="">
+									<div style="text-align: center; width: 80px;" class="">操作</div>
+								</th>
+							</tr>
+						</thead>
+					</table>
+				</div>
+			</div>
+			<div class="bDiv" style="height: auto;">
+				<div id="flexigrid" cellpadding="0" cellspacing="0" border="0">
+					<table cellspacing="0" cellpadding="0" id="goos_table">
+						<tbody>
+
+							<volist name="tastelist" id="list">
+								<tr date-id="{$list.id}">
+									<td class="sign" axis="col0">
+										<div style="width: 24px;">
+											<i class="ico-check"></i>
+										</div>
+									</td>
+									<td align="left" abbr="order_sn" axis="col3" class="">
+										<div style="text-align: left;" class="">{$list.tastename}&nbsp;&nbsp;&nbsp;</div>
+									</td>
+									<td align="center" abbr="article_time" axis="col6" class="">
+										<div style="text-align: center; width: 80px;" class="">
+											<a class="btn red" href="javascript:void(0);" onclick="delRow('{$list.id}')">
+												<i class="fa fa-trash-o"></i>删除</a>
+										</div>
+									</td>
+									<!-- <td style="width:100%" axis="col7">
+										<div></div>
+									</td> -->
+								</tr>
+							</volist>
+							<!-- <td style="width:100%" axis="col7">
+								<div></div>
+							</td> -->
+							<input type="hidden" id="goods_id" value="{$goods_id}">
+							</tbody>
+						</table>
+				</div>
+			</div>
+			<script type="text/javascript">
+				function addtastelist() {
+					var goods_id = $("#goods_id").val();
+
+					if(goods_id=="")
+					{
+						layer.alert('no find goods_id', {
+							icon: 2
+						});
+					}
+
+					var url = "/index.php?m=Admin&c=Goods&a=tastelistadd&goods_id=" + goods_id;
+					layer.open({
+						type: 2,
+						title: '添加口味',
+						shadeClose: true,
+						shade: 0.3,
+						area: ['90%', '90%'],
+						content: url,
+					});
+				}
+
+				function delRow(id){
+
+						var goods_id = $("#goods_id").val();
+						$.ajax({
+                type:'POST',
+                url:"{:U('Admin/goods/deltastelist')}",
+                data:{goods_id:goods_id,id:id},
+                dataType:'json',
+                success:function(data){
+									console.log(data)
+                    if(data.status = 1){
+                        layer.alert(data.msg, {icon: 1});
+                        setTimeout(function(){
+                        window.location.reload()
+                        },800);
+                    }else{
+                        layer.alert(data.msg, {icon: 2});
+                        setTimeout(function(){
+                        window.location.reload()
+                        },800);
+                    }
+
+  
+                                                
+                }
+        });
+
+				}
+
+				$(document).ready(function () {
+
+					$('#flexigrid > table>tbody >tr').click(function () {
+						$(this).toggleClass('trSelected');
+
+						var checked = $(this).hasClass('trSelected');
+						$(this).find('input[type="checkbox"]').attr('checked', checked);
+
+					});
+
+					$('.ico-check ', '.hDivBox').click(function () {
+						$('tr', '.hDivBox').toggleClass('trSelected', function (index, currentclass) {
+							var hasClass = $(this).hasClass('trSelected');
+							$('tr', '#flexigrid').each(function () {
+								if (hasClass) {
+									$(this).addClass('trSelected');
+								} else {
+									$(this).removeClass('trSelected');
+								}
+							});
+						});
+					});
+				});
+
+
+				function select_goods() {
+
+					if ($("input[type='checkbox']:checked").length == 0) {
+						layer.alert('请选择商品', {
+							icon: 2
+						}); //alert('请选择商品');
+						return false;
+					}
+					// 将没选中的复选框所在的  tr  remove  然后删除复选框
+					$("input[type='checkbox']").each(function () {
+						if ($(this).is(':checked') == false) {
+							$(this).parent().parent().parent().remove();
+						}
+						$(this).parent().parent().show();
+						$(this).siblings().show();
+						$(this).remove();
+					});
+					$(".btn-info").remove();
+					var tabHtml = $('#table_head').append($('#goos_table')).html();
+					javascript: window.parent.call_back(tabHtml.replace(/选择/, '购买数量'));
+				}
+			</script>
+</body>
+
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+<title>我的评价-{$tpshop_config['shop_info_store_title']}</title>
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/style.css">
+<script type="text/javascript" src="__STATIC__/photoClip/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="__STATIC__/js/flexible.js"></script>
+<script type="text/javascript" src="__STATIC__/js/jquery.form.js"></script>
+<script src="__PUBLIC__/js/layer/layer.js"></script>
+<script src="__PUBLIC__/js/global.js"></script>
+</head>
+	<body>
+		
+		<div class="main">
+			<div class="order_tab three">
+				<ul>
+					<li <if condition="$Request.param.status eq -1">class="select"</if> >
+						<a href="{:U('User/comment',array('status'=>-1))}">全部评价</a>
+					</li>
+					<li <if condition="$Request.param.status eq 0">class="select"</if>>
+						<a href="{:U('User/comment',array('status'=>0))}">待评价</a>
+					</li>
+					<li <if condition="$Request.param.status eq 1">class="select"</if>>
+						<a href="{:U('User/comment',array('status'=>1))}">已评价</a>
+					</li>
+				</ul>
+			</div>
+			<div id="list">
+				<foreach name="comment_list" item="vo" key="k"> 
+					<div class="order_list_item">
+						<div class="middel order_style">
+							<div class="good_img"><img src="{$vo.goods_id|goods_thum_images=300,300}"></div>
+							<div class="good_con">
+								<p class="f24 good_name">{$vo.goods_name}</p>
+								<div class="good_price f24 o_color">
+									¥{$vo.goods_price}
+								</div>
+								<div class="good_tip gray_color f22">
+									购买时间:{$vo.add_time|date='Y-m-d H:i',###}
+								</div>
+							</div>	
+						</div>
+						<div class="bottom">
+							<div class="right">
+								<if condition="$vo[is_comment] eq 0">
+									<a class="order_o_btn f22" href="{:U('User/add_comment',array('rec_id'=>$vo[rec_id]))}">评价订单</a>
+								<else/>
+									<a class="order_o_btn f22" href="{:U('User/order_detail',array('id'=>$vo[order_id]))}">查看订单</a>
+								</if>
+							</div>
+						</div>
+					</div>
+				</foreach>
+			</div>
+		</div>
+	<script>
+	 var  page = 1;
+	 var  flag=true;
+	 var  load_flag=true;
+	 function ajax_sourch_submit()
+	 {	
+	 	if(!flag){
+	 		/*已经到底了*/
+	 		return false;
+	 	}
+	 	if(!load_flag){
+	 		return false;
+	 	}
+	 	load_flag=false;
+        page += 1;
+		$.ajax({
+			type : "GET",			
+			url:"/index.php?m=Mobile&c=User&a=comment&status={$Request.param.status}&is_ajax=1&p="+page,//+tab,
+			success: function(data)
+			{
+				if($.trim(data) != ''){
+					$("#list").append(data);
+				}else{
+					flag=false;
+				}
+				load_flag=true;
+			}
+		}); 
+	 } 
+	 $(window).scroll(function () {
+ 		var listheight = $("#list").outerHeight(); 
+ 		listheight=listheight;
+	    if ($(document).scrollTop() + $(window).height() >= listheight) {
+			ajax_sourch_submit();
+	    }
+	});
+	</script>
+<include file="public/footer"/>

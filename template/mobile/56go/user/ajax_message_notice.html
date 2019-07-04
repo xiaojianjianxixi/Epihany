@@ -1,0 +1,9 @@
+<foreach name="messages" item="vo">
+	<li onclick="read('{$vo['rec_id']}','{$vo['status']}')">
+		<p class="message_list_tit f28">{$vo.message}</p>
+		<p class="f24 gray_color">{$vo.send_time|date="Y-m-d H:i:s",###}</p>
+		<if condition="$vo.status eq 0">
+			<i id="read_{$vo['rec_id']}" style="top: 0.5rem;background: red;width: 0.15rem;height: 0.15rem;line-height: .42625rem;border-radius: 0.1rem;position: absolute;right: .75rem;text-align: center; color: #fff;font-size: .25rem;"></i>
+		</if>
+	</li>
+</foreach>

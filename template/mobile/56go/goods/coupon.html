@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+	<title>优惠券-{$tpshop_config['shop_info_store_title']}</title>
+	<link rel="stylesheet" type="text/css" href="__STATIC__/css/style.css">
+	<script type="text/javascript" src="__STATIC__/photoClip/js/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="__STATIC__/js/flexible.js"></script>
+	<script type="text/javascript" src="__STATIC__/js/jquery.form.js"></script>
+	<script src="__PUBLIC__/js/layer/layer.js"></script>
+	<script src="__PUBLIC__/js/global.js"></script>
+</head>
+	<body>
+		<div class="main">	
+			<div class="prompt" id="prompt" style="display:none;">
+				<div class="prompt_box">	
+					<div class="prompt_top">
+						<p class="txt f28">确定使用<span id="points">0</span>积分兑换？</p>
+						<p class="tip gray_color f22">兑换后优惠券将放进您的个人中心里面</p>	
+					</div>
+					<div class="bot_btn">
+						<li>
+							<a href="javascript:void(0);" onclick="unshow('prompt')" class="gray_color f26">取消</a>
+						</li>
+						<li>
+							<input type="hidden" id="coupon_id" value="" />
+							<a href="javascript:void(0);" onclick="getcoupon('','submit_get')" class="o_color f26">确定</a>
+						</li>
+					</div>
+				</div>
+				<div class="mask"></div>
+			</div>
+			<div class="coupons">
+				<ul id="coupon_list">
+					<foreach name="coupon_list" item="vo">
+						<li>
+							<div class="top">
+								<div class="coupons_txt">
+									<span class="w_color f30 rmb">¥</span>
+									<span class="f50 w_color">{$vo.money}</span>
+									<span class="w_color f22 right">优惠券</span>
+								</div>
+								<div class="f22 w_color">
+									单笔订单满{$vo.condition}元可用
+								</div>
+							</div>
+							<div class="coupons_bg">
+							</div>
+							<div class="bottom">
+								<p class="info f22" style="height: 1rem;overflow: hidden;">{$vo.name}</br><span class="f28 o_color">{$vo.points}</span>积分</p>
+								<a href="javascript:void(0);" onclick="getcoupon('{$vo['id']}','get')" class="f22 receive">点击兑换</a>
+							</div>
+						</li>
+					</foreach>
+				</ul>
+			</div>
+		</div>
+		<script type="text/javascript">
+			function unshow(type){
+				$('#'+type).hide();
+			}
+			var url="/index.php?m=Mobile&c=Goods&a=coupon";
+			var  page = 1;
+			var  flag=true;
+			var  load_flag=true;
+			/*** ajax 提交表单 查询订单列表结果*/  
+			function ajax_goods_list()
+			{	 	
+			 	if(!flag){
+			 		/*已经到底了*/
+			 		return false;
+			 	}
+			 	if(!load_flag){
+			 		return false;
+			 	}
+			 	load_flag=false;
+				page += 1; 
+				$.ajax({
+					type : "GET",
+					url:url+"&p="+page,//+tab,
+					success: function(data)
+					{
+						if(data != ''){
+							$("#coupon_list").append(data);
+						}else{
+							flag=false;
+						}
+						load_flag=true;
+					}
+				}); 
+			}
+			$(window).scroll(function () {
+		 		var listheight = $("#coupon_list").outerHeight(); 
+		 		listheight=listheight;
+			    if ($(document).scrollTop() + $(window).height() >= listheight) {
+					ajax_goods_list();
+			    }
+			});
+			/*兑换优惠券*/
+			function getcoupon(coupon_id,act){
+				if(!coupon_id){
+					coupon_id=$('#coupon_id').val();
+				}
+				$.ajax({
+					type : "POST",
+					url:'{:U("Goods/getcoupon")}',
+					data:{coupon_id:coupon_id,act:act},
+					dataType:'json',
+					success: function(data)
+					{
+						console.log(data);
+						if(data.status<0){
+							layer.msg(data.msg,{icon:2});
+						}else{
+							if(act=='submit_get'){
+								$('.prompt').hide();
+								layer.msg(data.msg,{icon:1});
+							}else{
+								$('#coupon_id').val(coupon_id);
+								$('#points').html(data.condition);
+								$('.prompt').show();
+							}
+						}
+					}
+				}); 
+			}
+		</script>
+	<include file="public/footer"/>

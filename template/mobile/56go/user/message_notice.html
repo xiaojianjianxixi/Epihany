@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+<title>我的消息-{$tpshop_config['shop_info_store_title']}</title>
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/style.css">
+<script type="text/javascript" src="__STATIC__/photoClip/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="__STATIC__/js/flexible.js"></script>
+<script type="text/javascript" src="__STATIC__/js/jquery.form.js"></script>
+<script src="__PUBLIC__/js/layer/layer.js"></script>
+<script src="__PUBLIC__/js/global.js"></script>
+</head>
+	<body>
+		<div class="main">
+			<div class="message_list">
+				<ul id="list">
+					
+				</ul>
+			</div>
+		</div>
+		<script>
+	 var  page = 0;
+	 var  flag=true;
+	 var  load_flag=true;
+	 function ajax_sourch_submit()
+	 {	
+	 	if(!flag){
+	 		/*已经到底了*/
+	 		return false;
+	 	}
+	 	if(!load_flag){
+	 		return false;
+	 	}
+	 	load_flag=false;
+        page += 1;
+		$.ajax({
+			type : "GET",			
+			url:"/index.php?m=Mobile&c=User&a=ajax_message_notice&is_ajax=1&p="+page,//+tab,
+			success: function(data)
+			{
+				if($.trim(data) != ''){
+					$("#list").append(data);
+				}else{
+					flag=false;
+				}
+				load_flag=true;
+			}
+		}); 
+	 } 
+	 ajax_sourch_submit();
+	 $(window).scroll(function () {
+ 		var listheight = $("#list").outerHeight(); 
+ 		listheight=listheight;
+	    if ($(document).scrollTop() + $(window).height() >= listheight) {
+			ajax_sourch_submit();
+	    }
+	});
+	function read(rec_id,status){
+		if(rec_id<0||status==1){
+			return false;
+		}
+		$.ajax({
+			type : "GET",			
+			url:"/index.php?m=Mobile&c=User&a=read_message&rec_id="+rec_id,//+tab,
+			dataType:'json',
+			success: function(data)
+			{
+				console.log(data);
+				if(data['status']==1){
+					$('#read_'+rec_id).remove();
+				}
+			}
+		}); 
+	}
+	</script>
+<include file="public/footer"/>
+	</body>
+</html>

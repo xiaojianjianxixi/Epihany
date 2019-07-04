@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+<title>商品详情-{$tpshop_config['shop_info_store_title']}</title>
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/mui.min.css">
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/app.css" />
+<link href="__STATIC__/css/mui.picker.css" rel="stylesheet" />
+<link href="__STATIC__/css/mui.poppicker.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/style.css">
+<script type="text/javascript" src="__STATIC__/js/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/js/TouchSlide.1.1.js"></script>
+<script type="text/javascript" src="__STATIC__/js/flexible.js"></script>
+<script src="__STATIC__/js/mui.min.js"></script>
+<script src="__STATIC__/js/mui.picker.js"></script>
+<script src="__STATIC__/js/mui.poppicker.js"></script>
+<script src="__STATIC__/js/city.data-3.js" type="text/javascript" charset="utf-8"></script>
+<script src="__PUBLIC__/js/layer/layer.js"></script>
+<link href="__STATIC__/css/photoswipe.css" rel="stylesheet" type="text/css">
+<script src="__STATIC__/js/klass.min.js"></script> 
+<script src="__STATIC__/js/photoswipe.js"></script>
+<style>
+	.mui-btn {
+		font-size: 16px;
+		padding: 8px;
+		margin: 3px;
+	}
+	h5.mui-content-padded {
+		margin-left: 3px;
+		margin-top: 20px !important;
+	}
+	h5.mui-content-padded:first-child {
+		margin-top: 12px !important;
+	}
+	.ui-alert {
+		text-align: center;
+		padding: 20px 10px;
+		font-size: 16px;
+	}
+</style>
+</head>
+<body>
+		<div class="main">		
+			
+			<div class="head_tab" style="position: fixed;top:0;z-index:99;background-color: #FFF;width: 100%;;">
+				<li id="product_top" class="select"><a href="javascript:setGoodsTab('product');" class="f26">商品</a></li>
+				<li id="product_desc_top"><a href="javascript:setGoodsTab('product_desc');" class="f26">详情</a></li>
+				<li id="product_comment_top"><a href="javascript:setGoodsTab('product_comment');" class="f26">评论</a></li>
+				<div class="head_tab_right">
+					<a href="#"><i class="ic_share"></i></a>
+				</div>
+			</div>
+			<div style="height:1.25rem;"></div>
+			<script type="text/javascript">
+				function setGoodsTab(type){
+					if(type=='product_comment'){
+						var commentcount="{$commentStatistics.c0}";
+						if(commentcount<=0){
+							layer.msg('暂无评论',{icon:2,time: 2000,});
+							return false;
+						}
+					}
+					$('.head_tab').children('li').removeClass('select');
+				    $('#'+type+'_top').addClass('select');
+				    $('#product').hide();
+				    $('#product_desc').hide();
+				    $('#product_comment').hide();
+					$('#'+type).show();
+				}
+			</script>
+			<!--商品-->		
+			<div class="goods" id="product" style="display:block;">
+				<div id="focus" class="good_focus main">
+					<div class="hd">
+						<ul></ul>
+					</div>
+					<div class="bd">
+						<ul>
+							<foreach  name="goods_images_list" item="pic">
+				      	<li>
+				      		<a  href="javascript:void(0)">
+				      			<img title="" width="100%" src="{$pic.image_url}">
+				      		</a>
+				      	</li>
+				      </foreach>
+						</ul>
+					</div>
+				</div>
+				<script type="text/javascript">
+					TouchSlide({ 
+						slideCell:"#focus",
+						titCell:".hd ul", //开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+						mainCell:".bd ul", 
+						effect:"leftLoop", 
+						autoPlay:true,//自动播放
+						autoPage:true //自动分页
+					});
+				</script>
+				<div class="goods_info m-b15">
+					<div class="goods_name">
+						<h1 class="f24">{$goods.goods_name}</h1>
+						<p class="goods_price o_color f26">¥<span class="f34 o_color">{$goods.shop_price}</span></p>
+					</div>
+					<div class="goods_collect" onclick="collect_goods('{$goods['goods_id']}')">
+						<a href="javascript:void(0);">
+							<if condition="$collect gt 0">
+								<i class="collect_ic_select"></i>
+							<else/>
+								<i class="collect_ic"></i>
+							</if>
+						</a>
+						<p class="f20">收藏</p>
+					</div>
+					<div class="goods_tip">
+						<li>市场价:<span class="line-through gray_color">¥{$goods.market_price}</span></li>
+						<li>销量:{$goods.sales_sum}</li>
+						<li>当前库存:{$goods.store_count}</li>
+					</div>
+				</div>
+				<div class="goods_info_list m-b15">
+					<li id="showCityPicker3">
+						<a href="#">
+							<div class="left gray_color f24">
+								所在地区
+							</div>
+							<i class="arrow_right"></i>
+							<div id='cityResult3' class="right f24">
+								请选择地区
+							</div>
+						</a>
+					</li>
+					<li>
+						<a href="javascript:;" onclick="shipping()">
+							<div class="left gray_color f24">
+								运费信息
+							</div>
+							<i class="arrow_right"></i>
+							<div id="shippingname" class="right f24">
+								请选择配送方式
+							</div>
+						</a>
+					</li>
+					<li onclick="spec_show()">
+						<a href="javascript:void(0);">
+							<div class="left gray_color f24">
+								已选
+							</div>
+							<i class="arrow_right"></i>
+							<div class="right f24" id="spec_str">
+								请选择商品规格
+							</div>
+							<input type="hidden" name="spec_str" value="" />
+						</a>
+					</li>
+					<li onclick="setGoodsTab('product_desc')">
+						<a href="javascript:void(0);">
+							<div class="left f24">
+								查看商品详情
+							</div>
+							<i class="arrow_right"></i>
+						</a>
+					</li>
+				</div>
+
+				<div class="goods_eva m-b15">
+					<div class="goods_eva_top" onclick="setGoodsTab('product_comment')">
+						<if condition="$commentStatistics.c0 gt 0">
+							<li class="gray_color f24">用户评价</li>
+							<li class="f24">好评率<span class="o_color">{$commentStatistics.rate1}%</span></li>
+							<li class="f24">
+								<i class="arrow_right"></i>
+								<div class="right"><span class="o_color">{$commentStatistics.c0}</span>人评价</div>					
+							</li>
+						<else/>
+							<li class="o_color f24">暂无评价</li>
+						</if>
+					</div>
+					<div id="index_comment">
+						
+					</div>
+					<!--<div class="goods_eva_item">
+						<div class="eva_top">
+							<div class="eva_photo"><img src="__STATIC__/images/user_photo.png"></div>
+							<div class="eva_name f20">匿名用户</div>
+							<div class="eva_time gray_color f20">2017-10-11</div>
+						</div>
+						
+						<div class="eva_bot">
+							<div class="score"><span class="star"></span><span class="star"></span></div>
+							<div class="eva_con">
+								<div class="text f24">
+									双镜头，大内存，长镜头双镜头，大内存，长镜头双镜头，大内存，长镜头双镜头，大内存，长镜头双镜头，大内存，长镜头
+								</div>
+								<div class="img">
+									<li><a href="#"><img src="__STATIC__/images/goods_img.png"></a></li>
+									<li><a href="#"><img src="__STATIC__/images/goods_img.png"></a></li>
+									<li><a href="#"><img src="__STATIC__/images/goods_img.png"></a></li>
+									<li><a href="#"><img src="__STATIC__/images/goods_img.png"></a></li>
+									<li><a href="#"><img src="__STATIC__/images/goods_img.png"></a></li>
+								</div>
+							</div>
+						</div>
+					</div>-->
+					
+				</div>
+				<!--评论end-->
+				
+				
+				<div class="guess m-b15">
+					<div class="tit f24">
+						猜你喜欢
+					</div>
+					<ul id="ajax_return">
+						
+					</ul>
+				</div>	
+				<div class="cart_footer">
+					<php>
+						if(isMobile()){
+							if ( strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false ) {
+								$url='http://wpa.qq.com/msgrd?v=3&uin='.$tpshop_config['shop_info_qq'].'&site=qq&menu=yes';
+							}else{
+								$url='mqqwpa://im/chat?chat_type=wpa&uin='.$tpshop_config['shop_info_qq'].'&version=1&src_type=web';
+							}
+						}else{
+							$url='tencent://message/?uin='.$tpshop_config['shop_info_qq'];
+						}
+					</php>
+					<!--<li class="service"><a href="tencent://message/?uin={$tpshop_config['shop_info_qq']}&Site={$tpshop_config['shop_info_store_name']}&Menu=yes"><i class="service_ic"></i><p class="f20">客服</p></a></li>-->
+					<li class="service"><a href="{$url}"><i class="service_ic"></i><p class="f20">客服</p></a></li>
+					
+					<li class="cart"><a href="{:U('Cart/cart')}"><i class="cart_ic"></i><p class="f20">购物车</p></a></li>
+					<li onclick="spec_show()" class="join f26">加入购物车</li>
+					<li onclick="spec_show()" class="buy f26">立即购买</li>
+				</div>	
+				<div class="footer_block"></div>
+				
+			</div>
+			<!--详情-->
+		
+			<!--评论-->
+			<div class="goods_eva m-b15 m-t15" id="product_comment" style="display: none;">
+
+					
+			</div>
+			<!--弹窗-->	
+			<!--商品详情start-->
+			<div class="goods_eva m-b15 m-t15" id="product_desc" style="display:none;">
+				{$goods.goods_content|htmlspecialchars_decode} 
+			</div>
+			<!--商品详情end-->
+			<!--分享-->
+			<div class="share_box" style="display:none;">
+				<div class="share_box_top">
+					<ul>
+						<li>
+							<i class="wx_ic"></i>
+							<p>微 信</p>
+						</li>
+						<li>
+							<i class="wb_ic"></i>
+							<p>微 博</p>
+						</li>
+						<li>
+							<i class="pyq_ic"></i>
+							<p>朋友圈</p>
+						</li>
+					</ul>
+					<div class="share_box_cancel">
+						<button type="button">取 消</button>
+					</div>
+				</div>
+				
+				<div class="mask"></div>
+			</div>
+			<!--分享-->
+			<!--商品属性-->
+			<div class="pop_up" id="spec_list" style="display:none;">
+				<div class="pop_up_box">
+					<form name="buy_goods_form" method="post" id="buy_goods_form" >
+					<div class="middel order_style">
+						<i class="ic_close"></i>
+						<div class="good_img"><img src="{$goods.goods_id|goods_thum_images=300,300}"></div>
+						<div class="good_con">
+							<p class="f24 good_name">{$goods.goods_name}</p>
+							<div class="good_price f24 o_color">¥<span class="o_color f28" id="goods_price">{$goods.shop_price}</span></div>
+							<div class="good_tip gray_color f22">库存:<span id="store_count">{$goods.store_count}</span>件</div>			
+						</div>		
+					</div>
+					<div class="pop_item">
+						<div class="f24">
+							购买数量
+						</div>
+						<div class="btn_con">
+							<a href="javascript:;" onclick="goods_cut()" class="f34">-</a>
+							<input type="text" id="number" name="goods_num" value="1" style="padding:0;margin-bottom: 0;background-color: #f4f4f4;border-left: 2px solid #f0f0f0; border-right: 2px solid #f0f0f0;border-top: none; border-bottom: none;">
+							<input type="hidden" name="goods_id" value="{$goods.goods_id}"/>
+							<a href="javascript:;" onclick="goods_add()" class="f34">+</a>
+						</div>
+					</div>
+					<if condition="!empty($filter_spec)">
+						<foreach item="spec" key="key" name="filter_spec">
+							<div class="pop_item">
+								<div class="f24">
+									{$key}
+								</div>
+								<div class="pop_con">
+									<foreach name="spec" item="v2" key="k2">
+									  <li <if condition="$k2 eq 0">class="select"</if>  onclick="switch_spec(this);" >
+									  	<input type="radio" data-name="{$v2[item]}" class="radioItem" style="display:none;" name="goods_spec[{$key}]" value="{$v2[item_id]}" <if condition="$k2 eq 0 ">checked="checked"</if>/>
+						          		<a href="javascript:;">{$v2[item]}</a>
+									  </li>
+						           </foreach>
+								</div>
+							</div>
+						</foreach>
+					</if>
+					</form>
+					<div class="pop_bot_btn">
+						<li><a href="javascript:void(0);" onClick="AjaxAddCart({$goods.goods_id},1,0);" class="f26">加入购物车</a></li>
+						<li><a href="javascript:void(0);"  onclick="AjaxAddCartBuy({$goods.goods_id},1,1);" class="f26">立即购买</a></li>
+					</div>
+				</div>
+				
+				<div class="mask"></div>
+			</div>
+			<!--商品属性-->
+			<!--快递-->
+			<div class="pop_up" id="shippinglist" style="display:none;">
+				
+				<div class="pop_up_box">
+					<div class="pop_tit f24">
+						配送方式
+					</div>
+					<div id="address" class="pop_up_item address">
+						
+					</div>
+					<div class="pop_bot_btn"  onclick="select_shipping()">
+						<button type="button" class="f28 orange">确 认</button>
+					</div>
+				</div>
+				<div class="mask"></div>
+			</div>
+			<!--快递-->
+		<!--优惠券-->
+		<!--<div class="pop_up" style="display:none;">
+			<div class="pop_up_box">
+				<div class="pop_tit f24">
+					优惠券
+				</div>
+				<div class="pop_up_item coupon">
+					<li>
+						<div class="left f24">
+							<h1 class="f24 o_color">¥<span class="f30 o_color">100</span></h1>
+							<p class="gray_color f20">优惠券100元(满150元可用)</p>
+						</div>
+						<div class="right p-t20">
+							<input class="input_select" id="coupon1" type="radio" name="coupon"/>
+							<label for="coupon1"></label>
+						</div>
+					</li>
+					<li>
+						<div class="left f24">
+							不使用优惠券
+						</div>
+						<div class="right">
+							<input class="input_select" id="coupon2" type="radio" name="coupon"/>
+							<label for="coupon2"></label>
+						</div>
+					</li>
+				</div>
+				<div class="pop_bot_btn">
+					<button type="button" class="f28 orange">确 认</button>
+				</div>
+			</div>
+			<div class="mask"></div>
+		</div>-->
+		<!--优惠券-->
+		<!--成功提示-->
+		<div class="tip_success" style="display:none;">
+			<i class="success_ic"></i>
+			<p class="f22">添加购物城成功</p>
+			<p class="f22">请进入购物车查看商品</p>
+		</div>			
+		</div>
+		<script>
+			var region='';
+			(function($, doc) {
+				$.init();
+				$.ready(function() {
+					//级联示例
+					var cityPicker3 = new $.PopPicker({
+						layer: 3
+					});
+					cityPicker3.setData(cityData3);
+					var showCityPickerButton = doc.getElementById('showCityPicker3');
+					var cityResult3 = doc.getElementById('cityResult3');
+					showCityPickerButton.addEventListener('tap', function(event) {
+						cityPicker3.show(function(items) {
+							cityResult3.innerText = (items[0] || {}).text + (items[1] || {}).text  + (items[2] || {}).text;
+							var region_id=(items[2] || {}).value;
+							var goods_id="{$goods['goods_id']}";
+							var url="{:U('Mobile/Goods/dispatching')}";
+							region=region_id;
+							$.ajax({
+						        type : "POST",
+						        url:url,
+						        data:{goods_id:goods_id,region_id:region_id},
+						        dataType:'json',
+						        success: function(data){
+						        	var html='';
+						        	for(var i=0;i<data.result.length;i++){
+						        		if(data.result[i]['freight']<=0){
+						        			data.result[i]['freight']='包邮';
+						        		}
+						        		html=html+'<li><div class="left f24">'+data.result[i]['shipping_name']+'('+data.result[i]['freight']+')</div><div class="right"><input class="input_select" id="add'+i+'" type="radio" name="add"/><label data-shippingname="'+data.result[i]['shipping_name']+'('+data.result[i]['freight']+')"  class="select_shipping" for="add'+i+'"></label></div></li>';
+						        		
+						        	}
+						            doc.getElementById('address').innerHTML=html;
+						        }
+						    });
+							//返回 false 可以阻止选择框的关闭
+							//return false;
+						});
+					}, false);
+				});
+			})(mui, document);
+			
+			function shipping(){
+				if(!region){
+					layer.msg('请先选择地区',{icon:2,time: 1000,});
+					return false;
+				}
+				$('#shippinglist').show();
+			}
+			$('.mask').bind("click",function(){
+				$('#shippinglist').hide();
+				$('#spec_list').hide();
+			})
+			
+		</script>
+		<script type="text/javascript">
+			$(document).on("tap",".select_shipping",function(){
+				var name=$(this).attr('data-shippingname');
+				$('#shippingname').html(name);
+			})
+			function select_shipping(){
+				$('#shippinglist').hide();
+			}
+			function goods_cut(){
+		  		var num_val=document.getElementById('number');  
+		  		var new_num=num_val.value;  
+		  		var Num = parseInt(new_num);  
+		  		if(Num>1)Num=Num-1;  
+		  		num_val.value=Num;
+		  	}  
+		  	function goods_add(){
+		  		var num_val=document.getElementById('number'); 
+		  		var new_num=num_val.value;  
+		  		var Num = parseInt(new_num);  
+		  		Num=Num+1;  num_val.value=Num;
+		  	}
+		</script>
+		<script type="text/javascript">
+			$(document).ready(function(){	
+				// 更新商品价格
+				get_goods_price();
+			});
+			
+			function switch_spec(spec)
+			{
+			    $(spec).siblings().removeClass('select');
+			    $(spec).addClass('select');
+				$(spec).siblings().children('input').prop('checked',false);
+				$(spec).children('input').prop('checked',true);	
+			    //更新商品价格
+			    get_goods_price();
+			}
+			
+			function get_goods_price()
+			{
+				var goods_price = {$goods.shop_price}; // 商品起始价
+				var store_count = {$goods.store_count}; // 商品起始库存	
+				var spec_goods_price = {$spec_goods_price};  // 规格 对应 价格 库存表   //alert(spec_goods_price['28_100']['price']);	
+				// 如果有属性选择项
+				if(spec_goods_price != null && spec_goods_price !='')
+				{
+					goods_spec_arr = new Array();
+					var spec_str='';
+					$("input[name^='goods_spec']:checked").each(function(){
+						 goods_spec_arr.push($(this).val());
+						 if(spec_str){
+				    		spec_str=spec_str+','+$(this).attr("data-name");
+				    	}else{
+				    		spec_str=$(this).attr("data-name");
+				    	}
+					});    
+					if(spec_str){
+						$('#spec_str').html(spec_str);
+						$("input[name='spec_str']").val(spec_str);
+					}
+					var spec_key = goods_spec_arr.sort(sortNumber).join('_');  //排序后组合成 key	
+					goods_price = spec_goods_price[spec_key]['price']; // 找到对应规格的价格		
+					store_count = spec_goods_price[spec_key]['store_count']; // 找到对应规格的库存
+				}
+				var goods_num = parseInt($("#number").val()); 
+				// 库存不足的情况
+				if(goods_num > store_count)
+				{
+				   goods_num = store_count;
+				   layer.msg('库存仅剩 '+store_count+' 件',{icon:2});
+				   //alert('库存仅剩 '+store_count+' 件');
+				   $("#number").val(goods_num);
+				}
+			    var flash_sale_price = parseFloat("{$goods['flash_sale']['price']}");
+			    (flash_sale_price > 0) && (goods_price = flash_sale_price);
+				$("#goods_price").html(goods_price); // 变动价格显示
+				$("#store_count").html(store_count); // 变动价格显示
+				
+				
+			}
+			
+			function sortNumber(a,b) 
+			{ 
+				return a - b; 
+			} 
+			function index_add(){
+				var goods_id="{$goods.goods_id}";
+				var filter_spec="{$filter_spec}";
+				var spec_str=$("input[name='spec_str']").val();
+				if(spec_str||!filter_spec){
+					AjaxAddCart(goods_id,1,0);
+				}else{
+					$('#spec_list').show();	
+				}
+			}
+			function index_buy(){
+				var goods_id="{$goods.goods_id}";
+				var filter_spec="{$filter_spec}";
+				var spec_str=$("input[name='spec_str']").val();
+				if(spec_str||!filter_spec){
+					AjaxAddCartBuy(goods_id,1,1);
+				}else{
+					$('#spec_list').show();	
+				}
+			}
+			function spec_show(){
+				$('#spec_list').show();
+			}
+			var comment_null=false;
+			var is_load=false;
+			function ajaxComment(){
+				is_load=true;
+			    $.ajax({
+			        type : "GET",
+			        url:"/index.php?m=Mobile&c=goods&a=ajaxComment&goods_id={$goods['goods_id']}&commentType="+commentType+"&p="+page,//+tab,
+			        success: function(data){
+			            if(data){
+			            	is_load=false;
+			            	if(page==1){
+				            	$("#product_comment").empty().append(data);
+				            	$("#index_comment").empty().append(data);
+				            	var myPhotoSwipe = $("#gallery li a").photoSwipe({ 
+					        		enableMouseWheel: false, 
+					        		enableKeyboard: false, 
+					        		allowUserZoom: false, 
+					        		loop:false
+					        	});
+				            }else{
+				            	$("#product_comment").append(data);
+				            }
+			            }else{
+			            	comment_null=true;
+			            }
+			        }
+			    });
+			}
+			$(window).scroll(function (){
+				if(!comment_null&&!is_load){
+					page=page+1;
+					ajaxComment(commentType,page);
+				}
+    		});
+			/**
+			 * addcart 将商品加入购物车
+			 * @goods_id  商品id
+			 * @num   商品数量
+			 * @form_id  商品详情页所在的 form表单
+			 * @to_catr 加入购物车后再跳转到 购物车页面 默认不跳转 1 为跳转
+			 * layer弹窗插件请参考http://layer.layui.com/mobile/
+			 */
+			function AjaxAddCart(goods_id,num,to_catr)
+			{
+			    //如果有商品规格 说明是商品详情页提交
+			    if($("#buy_goods_form").length > 0){
+			        $.ajax({
+			            type : "POST",
+			            url:"/index.php?m=Mobile&c=Cart&a=ajaxAddCart",
+			            data : $('#buy_goods_form').serialize(),// 你的formid 搜索表单 序列化提交
+						dataType:'json',
+			            success: function(data){
+			            	
+			            	$('#spec_list').hide();
+							// 加入购物车后再跳转到 购物车页面
+						    if(data.status < 0)
+							{
+								layer.open({content: data.msg,time: 2000});
+								return false;
+							}
+						    if(to_catr == 1)  //直接购买
+						    {
+							    location.href = "/index.php?m=Mobile&c=Cart&a=cart";
+						    }else{
+						    	$('.tip_success').show();
+							    setTimeout(function(){
+							    	$('.tip_success').hide();
+							    },1000)
+						    }
+			            }
+			        });
+			    }else{ //否则可能是商品列表页 、收藏页商品点击加入购物车
+			        $.ajax({
+			            type : "POST",
+			            url:"/index.php?m=Home&c=Cart&a=ajaxAddCart",
+			            data :{goods_id:goods_id,goods_num:num} ,
+						dataType:'json',
+			            success: function(data){
+			
+							   if(data.status == -1)
+							   {
+								    //layer.open({content: data.msg,time: 2});
+									location.href = "/index.php?m=Mobile&c=Goods&a=goodsInfo&id="+goods_id;
+							   }
+							   else
+							   {
+								    if(data.status < 0)
+									{
+										layer.open({content:data.msg, time:2});
+										return false;
+									}
+								    cart_num = parseInt($('#tp_cart_info').html())+parseInt(num);
+								    $('#tp_cart_info').html(cart_num)
+							    	layer.open({content: data.msg,time: 1});
+									return false;
+							   }
+			            }
+			        });
+			    }
+			}
+			/**
+			 * addcart 将商品加入购物车(立即购买)
+			 * @goods_id  商品id
+			 * @num   商品数量
+			 * @form_id  商品详情页所在的 form表单
+			 * @to_catr 加入购物车后再跳转到 购物车页面 默认不跳转 1 为跳转
+			 * layer弹窗插件请参考http://layer.layui.com/mobile/
+			 */
+			function AjaxAddCartBuy(goods_id,num,to_catr)
+			{
+			    //如果有商品规格 说明是商品详情页提交
+			    if($("#buy_goods_form").length > 0){
+			        $.ajax({
+			            type : "POST",
+			            url:"/index.php?m=Mobile&c=Cart&a=ajaxAddCartBuy",
+			            data : $('#buy_goods_form').serialize(),// 你的formid 搜索表单 序列化提交
+						dataType:'json',
+			            success: function(data){
+							// 加入购物车后再跳转到 购物车页面
+						    location.href = "/index.php?m=Mobile&c=Cart&a=cart2&type=buy";
+			            }
+			        });
+			    }else{ //否则可能是商品列表页 、收藏页商品点击加入购物车
+			        $.ajax({
+			            type : "POST",
+			            url:"/index.php?m=Home&c=Cart&a=ajaxAddCartBuy",
+			            data :{goods_id:goods_id,goods_num:num} ,
+						dataType:'json',
+			            success: function(data){
+							location.href = "/index.php?m=Mobile&c=Cart&a=cart2&type=buy";
+			            }
+			        });
+			    }
+			}
+			// 点击收藏商品
+			function collect_goods(goods_id){
+				$.ajax({
+					type : "GET",
+					dataType: "json",
+					url:"/index.php?m=Mobile&c=goods&a=collect_goods&goods_id="+goods_id,//+tab,
+					success: function(data){
+						layer.msg(data.msg,{icon:1});
+						if(data.status==1){
+							$('.collect_ic').attr('class','collect_ic_select');
+						}
+					}
+				});
+			}
+			var  page = 1;
+			var commentType=1;
+    		ajaxComment();// ajax 加载评价列表
+			ajax_like_list();
+			/*** ajax 提交表单 查询订单列表结果*/  
+			function ajax_like_list()
+			{	 	
+				$.ajax({
+					type : "GET",
+					url:"/index.php?m=Mobile&c=Index&a=ajaxlikelist&limit=4",//+tab,
+					success: function(data)
+					{
+						if(data != ''){
+							$("#ajax_return").append(data);
+						}else{
+							flag=false;
+						}
+						load_flag=true;
+					}
+				}); 
+			}
+		</script>
+	</body>
+</html>
+

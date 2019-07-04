@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+	<title>全部分类-{$tpshop_config['shop_info_store_title']}</title>
+	<link rel="stylesheet" type="text/css" href="__STATIC__/css/style.css">
+	<script type="text/javascript" src="__STATIC__/js/jquery.js"></script>
+	<script type="text/javascript" src="__STATIC__/js/TouchSlide.1.1.js"></script>
+	<script type="text/javascript" src="__STATIC__/js/flexible.js"></script>
+</head>
+	<body>
+		<style>
+			body,html{background:#fff;height:100%;width:100%;}
+		</style>
+		<div class="search_box main" onclick="location.href='/index.php?m=Mobile&c=Goods&a=search_56go'">
+			<input class="search_input" type="text" placeholder="请输入商品名称"/>
+			<i class="search_ic"></i>
+		</div>
+		<div class="main">
+			<div class="class_left">
+				<ul>
+					<assign name="m" value="0"/>
+			    <foreach name="goods_category_tree" item="vo" key="k">
+            <if condition="$vo[level] eq 1">
+               <li <if condition="$m eq 0">class="select"</if> data-id="{$m++}"><a href="javascript:;">{$vo['mobile_name']|getSubstr=0,5}</a></li>
+            </if>
+	        </foreach>
+				</ul>
+			</div>	
+			<div class="class_right">
+				<div class="class_banner">
+					<adv pid="51323" item="v0" limit="1">
+						<a href="{$v0['ad_link']}">
+							<img src="{$v0['ad_code']}">
+						</a>
+					</adv>
+				</div>
+				<assign name="j" value="0"/>
+				<div class="catedetail">
+				<foreach name="goods_category_tree" item="vo" key="k">
+					<dl style="<if condition='$j eq 0'>display:block;<else/>display:none;</if>" data-id="{$j++}">
+					<foreach name="vo.tmenu" item="v2" key="k2">
+		        <div class="class_list" >
+							<h1 class="f24">{$v2['name']}</h1>
+							<ul>
+								<foreach name="v2.sub_menu" item="v3">
+									<li>
+										<a href="{:U('Mobile/Goods/goodsList',array('id'=>$v3[id]))}">
+											<img src="{$v3.image}" onerror='javascript:this.src="__STATIC__/images/default200x200.png";'>
+											<p>{$v3['name']|getSubstr=0,4}</p>	
+										</a>
+									</li>
+								</foreach>
+							</ul>
+						</div>
+			    </foreach>
+			    </dl>
+				</foreach>
+				</div>
+			</div>
+		</div>
+	
+		<script>
+			$(function () {
+		  //点击切换2 3级分类
+			var array=new Array();
+			$('.class_left li').each(function(){
+				array.push($(this).position().top-0);
+			});
+		
+			$('.class_left li').click(function() {
+				var index=$(this).index();
+				$('.class_left').delay(200).animate({scrollTop:array[index]},300);
+				$(this).addClass('select').siblings().removeClass();
+				$('.catedetail dl').eq(index).show().siblings().hide();
+		    $('.class_right').scrollTop(0);
+			});
+		
+		});
+		</script>
+			
+		<include file="public/footer"/>

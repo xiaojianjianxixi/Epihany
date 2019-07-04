@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+<title>申请售后-{$tpshop_config['shop_info_store_title']}</title>
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/style.css">
+<script type="text/javascript" src="__STATIC__/photoClip/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="__STATIC__/js/flexible.js"></script>
+<script type="text/javascript" src="__STATIC__/js/jquery.form.js"></script>
+<script src="__PUBLIC__/js/layer/layer.js"></script>
+<script src="__PUBLIC__/js/global.js"></script>
+</head>
+	<body>
+		<style>
+			body{
+				background:#fff;
+			}
+		</style>
+		<div class="main">				
+			<div class="special_page">
+				<div class="refund_img_2"></div>
+				<div class="refund_success">
+					<h1 class="f32">售后服务申请成功</h1>
+					<p class="f24"><span class="gray_color">申请时间:</span>{$data.addtime|date="Y-m-d",###}</p>
+					<p class="f24"><span class="gray_color">申请类型:</span><span class="o_color">
+						<switch name="data.type">
+							<case value="0">仅退款</case>
+							<case value="1">换货</case>
+							<case value="2">退货退款</case>
+						</switch>
+					</span></p>
+				</div>
+				<div class="special_btn">
+					<a href="{:U('User/return_goods_list')}" class="f24">售后首页</a>
+					<a href="{:U('User/order_detail',array('id'=>$data['order_id']))}" class="f24">订单详情</a>
+				</div>
+			</div>
+			
+		</div>
+	</body>
+</html>
+

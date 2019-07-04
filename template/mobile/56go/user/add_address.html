@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+<title>收货地址-{$tpshop_config['shop_info_store_title']}</title>
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/style.css">
+<script type="text/javascript" src="__STATIC__/photoClip/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="__STATIC__/js/flexible.js"></script>
+<script type="text/javascript" src="__STATIC__/js/jquery.form.js"></script>
+<script src="__PUBLIC__/js/layer/layer.js"></script>
+<script src="__PUBLIC__/js/global.js"></script>
+<script src="__STATIC__/js/mui.min.js"></script>
+<script src="__STATIC__/js/mui.picker.js"></script>
+<script src="__STATIC__/js/mui.poppicker.js"></script>
+<script src="__STATIC__/js/city.data-3.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/mui.min.css">
+<link href="__STATIC__/css/mui.picker.css" rel="stylesheet" />
+<link href="__STATIC__/css/mui.poppicker.css" rel="stylesheet" />
+</head>
+	<body>
+		<div class="main">		
+			<form id="address_form" action="" method="post" >
+			<div class="address_list_item">
+				<li>
+					<div class="left">收货人:</div>
+					<div class="right"><input name="consignee" id="consignee" style="border:none" type="text" placeholder="请填写收货人"></div>
+				</li>
+				<li>
+					<div class="left">手机号码:</div>
+					<div class="right"><input name="mobile" style="border:none" type="text" placeholder="请填写手机号码"></div>
+				</li>
+				<li id="showCityPicker3">
+					<div class="left">所在地区:</div>
+					<div class="right">
+						<input  id="cityResult3" style="border:none;" onfocus = "javascript:this.blur()"  type="text" placeholder="请选择所在地区">
+					</div>
+					<i class="arrow_right"></i>
+				</li>
+				<li>
+					<div class="left">详细地址:</div>
+					<div class="right"><input name="address" style="border:none" type="text" placeholder="请填写详细地址"></div>
+				</li>
+			</div>
+			<input type="hidden" name="province" id="province" value="" />
+			<input type="hidden" name="city" id="city" value="" />
+			<input type="hidden" name="district" id="district" value="" />
+			<div class="address_btn">
+				<if condition="$Request.param.source eq 'cart2'"> <!--如果是下订单时提交过了的页面-->
+						<button onclick="checkForm()" type="button" class="orange_btn f28">保存并使用该地址</button>
+            <input type="hidden" name="source" value="{$Request.param.source}" />
+        <else/>
+             <button onclick="checkForm()" type="button" class="orange_btn f28">保存收货地址</button>
+        </if>
+			</div>
+		</div>
+		</form>
+		<script type="text/javascript">
+			var region='';
+			(function($, doc) {
+				$.init();
+				$.ready(function() {
+					//级联示例
+					var cityPicker3 = new $.PopPicker({
+						layer: 3
+					});
+					cityPicker3.setData(cityData3);
+					var showCityPickerButton = doc.getElementById('showCityPicker3');
+					var cityResult3 = doc.getElementById('cityResult3');
+					showCityPickerButton.addEventListener('tap', function(event) {
+						cityPicker3.show(function(items) {
+							var tmp=(items[0] || {}).text + (items[1] || {}).text  + (items[2] || {}).text;
+							cityResult3.value=tmp;
+							var province=(items[0] || {}).value;
+							var city=(items[1] || {}).value;
+							var district=(items[2] || {}).value;
+							doc.getElementById('province').value=province;
+							doc.getElementById('city').value=city;
+							doc.getElementById('district').value=district;
+							//返回 false 可以阻止选择框的关闭
+						});
+					}, false);
+				});
+			})(mui, document);
+			function checkForm(){
+		        var consignee = $('input[name="consignee"]').val();
+		        var province = $('input[name="province"]').val();
+		        var city = $('input[name="city"]').val();
+		        var district = $('input[name="district"]').val();
+		        var address = $('input[name="address"]').val();
+		        var mobile = $('input[name="mobile"]').val();
+		        var error = '';
+		        if(consignee == ''){
+		            error = '收货人不能为空';
+		            layer.msg(error,{icon:2,time: 1000,});
+		            return false;
+		        }
+		        if(province==0){
+		            error = '请选择省份';
+		            layer.msg(error,{icon:2,time: 1000,});
+		            return false;
+		        }
+		        if(city==0){
+		            error = '请选择城市';
+		            layer.msg(error,{icon:2,time: 1000,});
+		            return false;
+		        }
+		        if(district==0){
+		            error = '请选择区域';
+		            layer.msg(error,{icon:2,time: 1000,});
+		            return false;
+		        }
+		        if(address == ''){
+		            error = '请填写地址';
+		            layer.msg(error,{icon:2,time: 1000,});
+		            return false;
+		        }
+		        if(!checkMobile(mobile)){
+		            error = '手机号码格式有误 ';
+		            layer.msg(error,{icon:2,time: 1000,});
+		            return false;
+				}
+				$.ajax({
+					type:'POST',
+					url:"{:U('Mobile/User/ajax_add_address')}",
+					data:$('#address_form').serialize(),
+					dataType:'json',
+					success:function(res){
+						if(res.status==1){
+							layer.msg(res.msg, {
+			                    icon: 1,   // 成功图标
+			                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+			                }, function(){ // 关闭后执行的函数
+			                	var source="{$Request.param.source}";
+			                	var type="{$Request.param.type}";
+			                    if(source!='cart2'){
+			                    	location.href = "/index.php?m=Mobile&c=User&a=address_list";
+			                    }else{
+			                    	location.href = "/index.php?m=Mobile&c=Cart&a=cart2&type="+type+"&address_id="+res.address_id;
+			                    }
+			                });
+						}else{
+							layer.msg(res.msg,{icon:2,time: 1000,});
+						}
+					}
+				})
+		    }
+		</script>
+	</body>
+</html>
+

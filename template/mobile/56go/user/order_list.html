@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+<title>订单列表-{$tpshop_config['shop_info_store_title']}</title>
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/style.css">
+<script type="text/javascript" src="__STATIC__/photoClip/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="__STATIC__/js/flexible.js"></script>
+<script type="text/javascript" src="__STATIC__/js/jquery.form.js"></script>
+<script src="__PUBLIC__/js/layer/layer.js"></script>
+<script src="__PUBLIC__/js/global.js"></script>
+</head>
+	<body>
+		
+		<div class="main">
+			<div class="order_tab four">
+				<ul>
+					<li <if condition="$Request.param.type eq ''">class="select"</if> >
+						<a href="{:U('/Mobile/User/order_list')}">全部订单</a>
+					</li>
+					<li <if condition="$Request.param.type eq 'WAITPAY'">class="select"</if>>
+						<a href="{:U('/Mobile/User/order_list',array('type'=>'WAITPAY'))}">待付款</a>
+					</li>
+					<li <if condition="$Request.param.type eq 'WAITSEND'">class="select"</if>>
+						<a href="{:U('/Mobile/User/order_list',array('type'=>'WAITSEND'))}">待发货</a>
+					</li>
+					<li <if condition="$Request.param.type eq 'WAITRECEIVE'">class="select"</if>>
+						<a href="{:U('/Mobile/User/order_list',array('type'=>'WAITRECEIVE'))}">待收货</a>
+					</li>
+				</ul>
+			</div>
+			<div id="order_list">
+				<volist name="lists" id="list">
+					<div class="order_list_item">
+						<a href="{:U('/Mobile/User/order_detail',array('id'=>$list['order_id']))}">
+							<div class="top">
+								<span class="f22 gray_color left">订单编号:{$list.order_sn}</span>
+								<span class="f22 o_color right">{$list.order_status_desc}</span>
+							</div>
+							<volist name="list.goods_list" id="good">
+								<div class="middel order_style">
+									<div class="good_img"><img src="{$good.goods_id|goods_thum_images=200,200}"></div>
+									<div class="good_con">
+										<p class="f24 good_name">{$good.goods_name}</p>
+										<div class="good_price f24 o_color">
+											¥{$good['member_goods_price']}
+										</div>
+										<div class="good_tip gray_color f22">
+											{$good.spec_key_name}
+										</div>
+									</div>	
+								</div>
+							</volist>
+						</a>
+						<div class="bottom">
+							<div class="left f22">共{$list.goods_list|count}件商品 应付:<span class="o_color">¥<span class="f28 o_color">{$list['order_amount']}</span></span></div>
+							<div class="right">
+								<if condition="$list.pay_btn eq 1"><a href="{:U('Mobile/Cart/cart4',array('order_id'=>$list['order_id']))}" class="order_o_btn f22">立即支付</a></if>
+								<if condition="$list.cancel_btn eq 1"><a href="javascript:void(0);"  onClick="cancel_order({$list.order_id})" class="order_g_btn f22">取消订单</a></if>
+								<if condition="$list.receive_btn eq 1"><a href="{:U('Mobile/User/order_confirm',array('id'=>$list['order_id'],type=>$Request.param.type))}" class="order_o_btn f22">确认收货</a></if>
+								<if condition="$list.comment_btn eq 1"><a href="{:U('/Mobile/User/comment')}" class="order_o_btn f22" >评价</a></if>
+								<if condition="$list.shipping_btn eq 1"><a href="{:U('User/shippping_code',array('order_id'=>$list['order_id']))}" class="order_o_btn f22" >查看物流</a></if>
+							</div>
+						</div>
+					</div>
+				</volist>
+			</div>
+		</div>
+		<script language="javascript">
+			var  page = 1;
+			var  flag=true;
+			var  load_flag=true;
+			/*** ajax 提交表单 查询订单列表结果*/  
+			function ajax_sourch_submit()
+		    {	
+		    	if(!flag){
+			 		/*已经到底了*/
+			 		return false;
+			 	}
+			 	if(!load_flag){
+			 		return false;
+			 	}
+			 	load_flag=false;
+		 		page += 1; 	
+				$.ajax({
+					type : "GET",
+					url:"/index.php?m=Mobile&c=User&a=order_list&type={$Request.param.type}&is_ajax=1&p="+page,//+tab,
+					success: function(data)
+					{
+						if(data != ''){
+							$("#order_list").append(data);			
+						}else{
+							flag=false;
+						}
+						load_flag=true;
+					}
+				}); 
+			}
+		    $(window).scroll(function () {
+		 		var listheight = $("#order_list").outerHeight(); 
+		 		listheight=listheight;
+			    if ($(document).scrollTop() + $(window).height() >= listheight) {
+					ajax_sourch_submit();
+			    }
+			});
+			//取消订单
+			function cancel_order(id){
+				if(!confirm("确定取消订单?"))
+					return false;
+				location.href = "/index.php?m=Mobile&c=User&a=cancel_order&id="+id;
+			}
+		</script>
+	<include file="public/footer"/>

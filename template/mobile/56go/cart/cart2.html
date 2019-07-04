@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+	<title>确认订单</title>
+	<link rel="stylesheet" type="text/css" href="__STATIC__/css/style.css">
+	<script type="text/javascript" src="__STATIC__/js/jquery.js"></script>
+	<script type="text/javascript" src="__STATIC__/js/flexible.js"></script>
+</head>
+<style>
+	.input_select + label {
+    margin-top: .45rem;
+    width: .5rem;
+    height: .5rem;
+    background-color: #fafafa;
+    border: 1px solid #cacece;
+    /* box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05); */
+    border-radius: .25rem;
+    display: inline-block;
+    position: relative;
+}
+</style>
+	<body>
+		<div class="main">
+			<form name="cart2_form" id="cart2_form" method="post">
+			<a href="{:U('User/address_list',array('source'=>'cart2','type'=>$type))}">
+				<div class="order_address">
+					<div class="top">
+						<p class="f28">{$address.consignee}    {$address.mobile}</p>
+					</div>
+					<input type="hidden" value="{$address.address_id}" name="address_id" />
+					<div class="bottom">
+						<i class="ic_address"></i><p class="f24">{$address.province_name}{$address.city_name}{$address.district_name}{$address.address}</p>
+					</div>
+				</div>
+			</a>
+			<style type="text/css">
+				.cartlist{
+					width: 100%;
+					display: inline-block;
+					height: 2rem;
+				}
+				.cart_goods_name{
+					overflow: hidden;
+			    white-space: normal;
+			    display: -webkit-box;
+			    -webkit-line-clamp: 2;
+			    text-overflow: ellipsis;
+			    -webkit-box-orient: vertical;
+				}
+			</style>
+			<div class="order_good_list m-b15" >
+				<foreach name="cartList" item="v"  key="k">
+					<if condition="$v[selected] eq '1'">
+						<div class="cartlist">
+							<div class="order_good_img">
+								<img src="{$v.goods_id|goods_thum_images=200,200}">
+							</div>
+							<div class="order_good_left">
+								<p class="f24 cart_goods_name">{$v.goods_name}</p>
+								<p class="order_good_tip f20 gray_color">{$v.spec_key_name}</p>
+							</div>
+							<div class="order_good_right">
+								<p class="o_color f24">¥{$v.member_goods_price}</p>
+								<p class="f24">x{$v.goods_num}</p>
+							</div>
+						</div>
+					</if>
+				</foreach>
+			</div>
+			<div class="user_edit_list">
+				<ul>
+					<li onclick="selectoption('shippinglist');">
+						<a href="javascript:void(0);" >
+							<div class="left f24">支持配送</div>
+							<i class="arrow_right"></i>	
+							<div class="right f24" id="shop_name">{$shippingList[0]['name']}</div>
+						</a>
+					</li>
+					<li onclick="selectoption('invoice_title');" id="invoice_btn">
+						<a href="javascript:;">
+							<div class="left f24">发票信息</div>
+							<i class="arrow_right"></i>
+							<div class="right f20">
+								<p>纸质发票</p>
+								<p>非图书商品不开发票</p>
+							</div>
+						</a>
+					</li>
+					<div id="invoice_title" style="display:none;">
+						<li>
+							<div class="refund_amount_left f24">发票抬头类型</div>
+							<div style="float:right;margin-right: 0.5rem;">
+								<div style="position:relative;display:inline-block;float:left;height: 1.375rem;margin-left:.25rem;">
+									<input class="input_select" type="radio" onchange="unselectoption('tax');" checked name="invoice_type" id="invoice_type0" value="0">
+									<label for="invoice_type0"></label>
+								</div>
+								<div class="f24" style="line-height: 1.375rem;height: 1.375rem;display:inline-block;float:left;margin-left:.25rem;">个人</div>
+								<div style="position:relative;display:inline-block;float:left;height: 1.375rem;margin-left:.25rem;">	
+									<input class="input_select" type="radio" onchange="selectoption('tax');" name="invoice_type" id="invoice_type1" value="1">
+									<label for="invoice_type1"></label>								
+								</div>
+								<div class="f24" style="line-height: 1.375rem;height: 1.375rem;display:inline-block;float:left;margin-left:.25rem;">企业</div>
+							</div>
+						</li>
+						<li>
+							<div class="refund_amount_left f24">发票抬头</div>
+							<input type="text" style="float: right;margin-right: 0.5rem;text-align: right;padding-right: 0.25rem;" name="invoice_title" placeholder="XXX单位或 XXX个人" class="refund_amount_input f24">
+						</li>
+						<li id="tax" style="display:none;">
+							<div class="refund_amount_left f24">税号</div>
+							<input type="text" style="float: right;margin-right: 0.5rem;text-align: right;padding-right: 0.25rem;" name="invoice_tax" placeholder="开具发票公司必填" class="refund_amount_input f24">
+						</li>
+					</div>
+					<!--<li>
+						<div class="refund_amount_left f24">退款金额</div>
+						<input type="text" placeholder="请输入退款金额" class="refund_amount_input f24">
+					</li>-->
+				</ul>
+			</div>
+			<div class="integral">
+				<p class="f24">使用积分券码</p>
+				<ul>
+					<li>
+						<div class="refund_amount_left f24">使用积分</div>
+						<input id="pay_points" name="pay_points" type="text" placeholder="可用积分{$user['pay_points']}" class="refund_amount_input f24">
+						<button type="button" onClick="ajax_order_price();" class="confirm f24">使用</button>
+					</li>
+					<li>
+						<div class="refund_amount_left f24">使用券码</div>
+						<input name="couponCode" id="bonus_sn_0"  type="text" placeholder="填写优惠券券码" class="refund_amount_input f24">
+						<button type="button" onClick="ajax_order_price();" class="confirm f24">使用</button>
+					</li>
+				</ul>
+			</div>
+			<if condition="!empty($couponList)">
+				<div class="user_edit_list bor_top1">
+					<ul>
+						<li onclick="selectoption('couponList');">
+							<a href="#">
+								<div class="left f24">优惠券</div>
+								<i class="arrow_right"></i>	
+								<!--<div class="right f24 o_color">3张优惠券可用</div>-->
+							</a>
+						</li>
+					</ul>
+				</div>
+			</if>
+			<!--快递-->
+			<div class="pop_up" id="shippinglist" style="display:none;">
+				
+				<div class="pop_up_box">
+					<div class="pop_tit f24">
+						配送方式
+					</div>
+					<div id="address" class="pop_up_item address">
+						<foreach name="shippingList" item="v"  key="k">
+	            <li name="payment_name">
+								<div class="left f24">
+									 {$v.name}
+								</div>
+								<div class="right">
+									<input class="input_select"  type="radio" name="shipping_code" id="{$v.code}" value="{$v.code}"  <if condition="$k eq 0"> checked="checked" </if> onclick="select_shipping('{$v['name']}')"/>
+									<label for="{$v.code}"></label>
+								</div>
+							</li>
+            </foreach>
+					</div>
+					<div class="pop_bot_btn" >
+						<button type="button" class="f28 orange" onclick="unselectoption('shippinglist')">确 认</button>
+					</div>
+				</div>
+				<div class="mask"></div>
+			</div>
+			<!--快递-->
+			<!--优惠券-->
+			<div class="pop_up" id="couponList" style="display:none;">
+				
+				<div class="pop_up_box">
+					<div class="pop_tit f24">
+						选择优惠券
+					</div>
+					<div id="address" class="pop_up_item address">
+						<foreach name="couponList" item="v"  key="k">
+	            <li>
+								<div class="left f24">{$v['name']}</div>
+								<div class="right">
+									<input class="input_select"  type="radio" name="coupon_id" id="coupon{$v.id}" value="{$v.id}"   onclick="ajax_order_price()"/>
+									<label for="coupon{$v.id}"></label>
+								</div>
+							</li>
+            </foreach>
+					</div>
+					<div class="pop_bot_btn" >
+						<button type="button" class="f28 orange" onclick="unselectoption('couponList')">确 认</button>
+					</div>
+				</div>
+				<div class="mask"></div>
+			</div>
+			<!--优惠券-->
+			<div class="refund_info m-b15">			
+				<div class="refund_tit f24">
+					用户备注(限50字)
+				</div>
+				<textarea name="user_note" class="refund_textarea f24" placeholder="对本次交易的说明"></textarea>
+			</div>
+			</form>
+			<div class="order_details_con">
+				<div class="left">
+					<p>商品总价</p>
+					<p>运费</p>
+					<p>优惠券</p>
+					<p>积分</p>
+					<p>活动优惠</p>
+					<p>实付金额</p>
+				</div>
+				<div class="right">
+					<p>¥{$total_price.total_fee}</p>
+					<p id="postFee">¥{$total_price.shipping_price}</p>
+					<p id="couponFee">¥0</p>
+					<p id="pointsFee">¥0</p>
+					<p id="order_prom_amount">¥0</p>
+					<p id="payables" class="o_color">¥{$total_price.total_fee}</p>
+				</div>
+				
+			</div>
+
+			
+			<div class="order_bottom">
+				<a href="javascript:void(0);" onclick="submit_order()" class="f24 bg_orange_btn">立即付款</a>
+				<div class="order_bottom_sum">
+					 <p class="f22">应付金额:<span class="o_color f22">¥<span class="f28 o_color" id="payables2">{$total_price.total_fee}</span></span></p>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+		var type="{$type}";
+	    $(document).ready(function(){
+	        ajax_order_price(); // 计算订单价钱
+	    });
+	    function select_shipping(shipping_name){
+	    	$('#shop_name').html(shipping_name);
+	    	ajax_order_price();
+	    }
+    
+		// 获取订单价格
+		function ajax_order_price()
+		{
+		    $.ajax({
+		        type : "POST",
+		        url:'/index.php?m=Mobile&c=Cart&a=cart3&act=order_price&t='+Math.random(),
+		        data : $('#cart2_form').serialize()+"&type="+type,
+		        dataType: "json",
+		        success: function(data){
+		            if(data.status != 1)
+		            {
+		                alert(data.msg);
+		                // 登录超时
+		                if(data.status == -100)
+		                    location.href ="{:U('Mobile/User/login')}";
+		
+		                return false;
+		            }
+		            $("#postFee").text('￥'+data.result.postFee); // 物流费
+		            $("#couponFee").text('￥'+data.result.couponFee);// 优惠券
+		            //$("#balance").text('￥'+data.result.balance);// 余额
+		            $("#pointsFee").text('￥'+data.result.pointsFee);// 积分支付
+		            $("#payables").text('￥'+data.result.payables);// 应付
+		            $("#payables2").text(data.result.payables);// 应付
+								$("#order_prom_amount").text('￥'+data.result.order_prom_amount);// 订单 优惠活动
+		        }
+		    });
+		}
+		
+		// 提交订单
+		ajax_return_status = 1; // 标识ajax 请求是否已经回来 可以进行下一次请求
+		function submit_order()
+		{
+			if(ajax_return_status == 0)
+			    return false;
+				
+			ajax_return_status = 0;	
+			
+		    $.ajax({
+		        type : "POST",
+		        url:"{:U('Mobile/Cart/cart3')}",//+tab,
+		        data : $('#cart2_form').serialize()+"&act=submit_order&type="+type,// 你的formid
+		        dataType: "json",
+		        success: function(data){
+		
+		            if(data.status != '1')
+		            {
+		                alert(data.msg); //执行有误
+		                // 登录超时
+		                if(data.status == -100)
+		                    location.href ="{:U('Mobile/User/login')}";
+							
+						ajax_return_status = 1; // 上一次ajax 已经返回, 可以进行下一次 ajax请求							
+		
+		                return false;
+		            }
+		            // console.log(data);
+		            $("#postFee").text(data.result.postFee); // 物流费
+		            $("#couponFee").text(data.result.couponFee);// 优惠券
+		            $("#balance").text(data.result.balance);// 余额
+		            $("#pointsFee").text(data.result.pointsFee);// 积分支付
+		            $("#payables").text(data.result.payables);// 应付
+								$("#order_prom_amount").text(data.result.order_prom_amount);// 订单 优惠活动 									
+		            alert('订单提交成功，跳转支付页面!');
+		            location.href = "/index.php?m=Mobile&c=Cart&a=cart4&order_id="+data.result;
+		        }
+		    });
+		}
+		$('.mask').bind("click",function(){
+			$('#shippinglist').hide();
+			$('#couponList').hide();
+			
+		})
+		function selectoption(id){
+			$('#'+id).show();
+			if(id=='invoice_title'){
+				$("#invoice_btn").attr('onclick','').click( eval(function(){unselectoption('invoice_title');}))
+			}
+		}
+		function unselectoption(id){
+			$('#'+id).hide();
+			if(id=='invoice_title'){
+				$("#invoice_btn").attr('onclick','').click( eval(function(){selectoption("invoice_title");}))
+			}
+		}
+</script>
+	</body>
+</html>

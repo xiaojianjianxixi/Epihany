@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+<title>申请服务详情-{$tpshop_config['shop_info_store_title']}</title>
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/style.css">
+<script type="text/javascript" src="__STATIC__/photoClip/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="__STATIC__/js/flexible.js"></script>
+<script type="text/javascript" src="__STATIC__/js/jquery.form.js"></script>
+<script src="__PUBLIC__/js/layer/layer.js"></script>
+<script src="__PUBLIC__/js/global.js"></script>
+</head>
+	<body>
+		<div class="main">
+			<div class="refund_info">
+				<li>
+					<div class="refund_info_left f24 gray_color">订单编号:</div>
+					<div class="refund_info_right f24">{$return_goods['order_sn']}</div>
+				</li>
+				<li>
+					<div class="refund_info_left f24 gray_color">申请时间:</div>
+					<div class="refund_info_right f24">{$return_goods['addtime']|date="Y-m-d H:i:s",###}</div>
+				</li>
+			</div>			
+			<div class="order_good_list">
+				<div class="order_good_img">
+					<img src="{$goods[goods_id]|goods_thum_images=300,300}">
+				</div>
+				<div class="order_good_left">
+					<p class="f24 text_out">{$goods['goods_name']}</p>
+					<p class="order_good_tip f20 gray_color">{$return_goods['spec_key_name']}</p>
+				</div>
+				<div class="order_good_right">
+					<p class="o_color f24">¥{$goods.shop_price}</p>
+				</div>
+			</div>
+			<div class="refund_info bor_bot0">
+				<li>
+					<div class="refund_info_left f24 gray_color">售后信息:</div>
+					<div class="refund_info_right f24 o_color">
+						<if condition="$return_goods.status eq 0">
+							申请中
+						</if>
+						<if condition="$return_goods.status eq 1">
+							处理中
+						</if>
+						<if condition="$return_goods.status eq 2">
+							<switch name="return_goods.return_status">
+								<case value="1">审核通过</case>
+								<case value="2">审核失败</case>
+							</switch>
+						</if>
+					</div>
+				</li>
+				<li>
+					<div class="refund_info_left f24 gray_color">处理方式:</div>
+					<div class="refund_info_right f24">
+						<switch name="return_goods.type">
+							<case value="0">仅退款</case>
+							<case value="1">换货</case>
+							<case value="2">退货退款</case>
+						</switch>
+					</div>
+				</li>
+				<li>
+					<div class="refund_info_left f24 gray_color">问题描述:</div>
+					<div class="refund_info_right f24">{$return_goods.reason}</div>
+				</li>
+			</div>
+			<div class="refund_img">
+				<p class="f22 tit">问题图片</p>
+				<ul>
+					<volist name="return_goods[imgs]" id="item">  
+						<li><img src="{$item}"></li>
+          </volist>            
+				</ul>
+			</div>
+			<div class="refund_step">
+				<li>
+					<h1 class="f26">亲爱的客户，您的服务单已经提交成功，请耐心等待客服审核</h1>
+					<p class="f22 gray_color">操作人:系统</p>
+					<p class="f22 gray_color">{$return_goods['addtime']|date="Y-m-d H:i:s",###}</p>
+				</li>
+				<if condition="$return_goods.status eq 2 and $return_goods.return_status eq 1">
+					<li>
+						<h1 class="f26">亲爱的客户，您的服务单已通过审核</h1>
+						<p class="f22 gray_color">操作人:系统</p>
+						<!--<p class="f22 gray_color">2016-03-16 19:00:00</p>-->
+					</li>
+				</if>
+				<if condition="$return_goods.status eq 2 and $return_goods.return_status eq 2">
+					<li>
+						<h1 class="f26">亲爱的客户，您的服务单未通过审核</h1>
+						<p class="f22 gray_color">操作人:系统</p>
+						<!--<p class="f22 gray_color">2016-03-16 19:00:00</p>-->
+					</li>
+				</if>
+				<if condition="$return_goods.status eq 2">
+					<li>
+					<h1 class="f26">亲爱的客户，您的服务单已完成</h1>
+					<p class="f22 gray_color">操作人:系统</p>
+					<!--<p class="f22 gray_color">2016-03-16 19:00:00</p>-->
+				</li>
+				</if>
+			</div>
+		</div>
+	</body>
+</html>

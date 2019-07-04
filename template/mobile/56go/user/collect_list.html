@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+<title>我的收藏-{$tpshop_config['shop_info_store_title']}</title>
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/style.css">
+<script type="text/javascript" src="__STATIC__/photoClip/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="__STATIC__/js/flexible.js"></script>
+<script type="text/javascript" src="__STATIC__/js/jquery.form.js"></script>
+<script src="__PUBLIC__/js/layer/layer.js"></script>
+<script src="__PUBLIC__/js/global.js"></script>
+</head>
+	<body>
+		<div class="main">		
+			<div class="list_style2">
+				<ul >
+					<foreach name="goods_list" item="goods">
+						<li>
+							<a href="{:U('Goods/goodsInfo',array('id'=>$goods[goods_id]))}">
+								<div class="good_img"><img src="{$goods.goods_id|goods_thum_images=300,300}"></div>
+								<div class="good_con">
+									<p class="f26 good_name">{$goods.goods_name}</p>
+									<div class="good_price f22 o_color">
+										¥<span class="f32 o_color">{$goods.shop_price}</span>
+									</div>
+									<a href="{:U('User/cancel_collect',array('collect_id'=>$goods[collect_id]))}"><i class="del_ic"></i></a>
+								</div>							
+							</a>
+						</li>
+					</foreach>
+				</ul>
+			</div>
+		</div>
+		<script>
+		var  page = 1;
+		var  flag=true;
+		var  load_flag=true;
+		 /*** ajax 提交表单 查询订单列表结果*/  
+		 function ajax_sourch_submit()
+		 {	 	 	 
+		 		if(!flag){
+			 		/*已经到底了*/
+			 		return false;
+			 	}
+			 	if(!load_flag){
+			 		return false;
+			 	}
+			 	load_flag=false;
+		    page += 1;
+				$.ajax({
+					type : "GET",
+					url:"/index.php?m=Mobile&c=User&a=collect_list&is_ajax=1&p="+page,//+tab,			
+					success: function(data)
+					{
+						if($.trim(data) != ''){
+							$(".list_style2 > ul").append(data);
+						}else{
+							flag=false;
+						}
+						load_flag=true;
+					}
+				}); 
+		 } 
+		 $(window).scroll(function () {
+		 		var listheight = $(".list_style2").outerHeight(); 
+		 		listheight=listheight;
+			    if ($(document).scrollTop() + $(window).height() >= listheight) {
+						ajax_sourch_submit();
+			    }
+			});
+		</script>
+		<include file="public/footer"/>
+

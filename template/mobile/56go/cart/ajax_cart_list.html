@@ -1,0 +1,106 @@
+<if condition="empty($cartList)">  
+	<div class="empty">
+		<img src="__STATIC__/images/img_cart_empty.png">
+		<p class="f26">您的购物车没有任何商品</p>
+		<p class="f22 gray_color"><a href="{:U('Index/index')}">去逛逛</a></p>
+	</div>
+</if>
+<div class="list_style3">
+	<ul>
+		<foreach name="cartList" item="v" key="k" >
+			<li>
+				<div class="select_box">
+					<input type="checkbox" name="cart_select[{$v.id}]" value="1" onclick="ajax_cart_list();" class="cart_select" <if condition="$v[selected] eq 1" >checked</if> id="int{$k}"/>
+					<label for="int{$k}"></label>
+				</div>
+				<div class="good_img"><img style="max-width: 70%;" src="{$v.goods_image_url}"></div>
+				<div class="good_con">
+					<a href="javascript:;" onclick="del_cart_goods({$v.id})" class="del f24">删除</a>
+					<p class="f24 good_name">{$v.goods_name}</p>
+					<div class="good_tip gray_color f22">
+						{$v.spec_key_name}
+					</div>
+					<div class="good_price f24 o_color">
+						¥{$v.member_goods_price}
+					</div>
+					<div class="btn_con">
+						<a href="javascript:;" onclick="switch_num(-1,{$v.id},{$v.store_count});" id="jiannum6 "  class="f34 input-sub active">-</a>
+						<input id="goods_num[{$v.id}]" type="text" onKeyDown='if(event.keyCode == 13) event.returnValue = false' name="goods_num[{$v.id}]"  value="<if condition='$v[goods_num] gt $v[store_count]'>{$v[store_count]}<else />{$v[goods_num]}</if>"  onblur="ajax_cart_list()"/>
+						<a href="javascript:;" onclick="switch_num(1,{$v.id},{$v.store_count});"  class="input-add active f34">+</a>
+					</div>
+				</div>							
+			</li>
+		</foreach>
+	</ul>
+</div>
+<div style="height: 50px;"></div>
+<div class="cart_bottom">
+	<div class="select_box" >
+		<input type="checkbox" onclick="chkAll_onclick()"  class="cart_select" id="intall"/>
+		<label for="intall"></label>
+		<span class="f24">全选</span>
+	</div>
+	<div class="cart_pay_btn">
+		<button type="button" class="f28" onclick="return selcart_submit();">去结算</button>
+	</div>
+	<div class="cart_pay_box" style="">
+		<p class="f20">合计:<span class="o_color">¥<span class="f24 o_color">{$total_price.total_fee}</span></span></p>
+		<p class="f20 gray_color">免费派送</p>
+	</div>
+	
+</div>
+<script type="text/javascript">
+
+//定义变量
+var is_checked = true;
+$("input[name^='cart_select']").each(function(){
+    //判断商品是否选中
+    if(!$(this).attr('checked'))
+    {
+       is_checked = false;
+       return false;
+    }
+});
+if(is_checked){
+  	$("#intall").attr('checked',true); 
+}else
+{
+  	$("#intall").attr('checked',false); 
+}
+function chkAll_onclick() 
+{
+    var select1= document.getElementById("intall").checked;
+    if(select1!=true){
+  		//取消
+	    $("input[name^='cart_select']").attr('checked',false);
+        is_checked = false;
+    }else{
+	  	//全选
+		$("input[name^='cart_select']").attr('checked',true);
+	    is_checked = true;
+  	}
+    ajax_cart_list();
+}
+
+
+
+//点击结算
+function selcart_submit()
+{
+    //获取中的商品数量
+     var j=0;
+	 $('input[name^="cart_select"]:checked').each(function(){
+	       j++;
+	 });
+    //判断是否有选择
+     if (j>0)
+     {
+		  window.location.href="{:U('Mobile/Cart/cart2')}";
+     }
+     else
+     {   
+	     alert('请选择要结算的商品！');
+	     return false;
+    }
+}
+</script>

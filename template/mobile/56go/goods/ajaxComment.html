@@ -1,0 +1,35 @@
+ <!---晒单end-->
+<if condition="$count gt 0">
+	<foreach name="commentlist" item="v" key="k">
+		<if condition="$v.is_show eq 1">
+			<div class="goods_eva_item">
+				<div class="eva_top">
+					<div class="eva_photo"><img src="{$v['head_pic']|default='__STATIC__/images/user_photo.png'}"></div>
+					<div class="eva_name f20">{$v.username}</div>
+					<div class="eva_time gray_color f20">{$v.add_time|date='Y-m-d',###}</div>
+				</div>
+				<div class="eva_bot">
+					<div class="score">
+						<php>
+							for($i=0;$i<$v['service_rank'];$i++){
+								echo '<span class="star"></span>';
+							}
+						</php>
+					</div>
+					<div class="eva_con">
+						<div class="text f24">
+							{$v['content']|htmlspecialchars_decode}
+						</div>
+						<if condition="$v['img'] neq ''">
+							<div class="img" id="gallery">
+								<foreach name="v['img']" key="key" item="v2">
+									<li><a href="{$v2}"><img src="{$v2}"></a></li>
+								</foreach>
+							</div>
+		                </if>
+					</div>
+				</div>
+			</div>
+		</if>
+	</foreach>
+</if>

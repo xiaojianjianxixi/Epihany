@@ -1,0 +1,3 @@
+<?php
+//000000000001a:1:{i:0;a:16:{s:5:"ad_id";i:103;s:3:"pid";i:51323;s:10:"media_type";i:0;s:7:"ad_name";s:21:"自定义广告名称";s:7:"ad_link";s:0:"";s:7:"ad_code";s:65:"/public/upload/ad/2017/07-27/a599808f2fb98f1fb593c973bc4bae9d.png";s:10:"start_time";i:1451577600;s:8:"end_time";i:1546272000;s:8:"link_man";s:0:"";s:10:"link_email";s:0:"";s:10:"link_phone";s:0:"";s:11:"click_count";i:0;s:7:"enabled";i:1;s:7:"orderby";i:0;s:6:"target";i:0;s:7:"bgcolor";s:0:"";}}
+?>

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>商品列表</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+	<link rel="stylesheet" type="text/css" href="__STATIC__/css/tpshop.css" />
+	<script src="__PUBLIC__/js/global.js"></script>
+	<script src="__PUBLIC__/js/pc_common.js"></script>
+	<link rel="stylesheet" href="__STATIC__/css/integral.css">
+    <link rel="stylesheet" href="__STATIC__/css/page.css">
+    <script src="__PUBLIC__/js/jquery-1.8.2.min.js"></script>
+    <script src="__PUBLIC__/js/layer/layer-min.js"></script>
+    <script src="__PUBLIC__/js/pc_common.js"></script>
+    
+</head>
+<body>
+<style>
+@media screen and (max-width: 1260px) {
+    .header .ecsc-join{
+        display: none;
+    }
+    .top-ri-header ul li{
+        padding: 0 4px;
+    }
+    .list1 .dd{
+        width: 200px !important;
+    }
+    .footer{
+        min-width: inherit;
+    }
+    .navitems{
+        width: 840px;
+    }
+    .categorys .dt a{
+        width: 100px;
+    }
+    .categorys{
+        width: 140px;
+    }
+    .footer .foot-list-fl{
+        width: 608px;
+    }
+    .footer .foot-list-fl ul{
+        width: 120px;
+    }
+    .categorys .cata-nav-name h3{
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .home_categorys .cata-nav-layer{
+        left: 140px !important;
+    }
+    .categorys .cata-nav-layer{
+        width: 840px;
+    }
+    .categorys .cata-nav-layer .cata-nav-rigth{
+        display: none;
+    }
+    .categorys .dt a:before{
+        margin-right: 0;
+        width: 0;
+    }
+    .sendaddress{
+        display: none;
+    }
+}
+/*冲突样式*/
+.t1font a {
+    line-height: 29px;
+}
+.exchange ul .travel {
+    background: none;
+    background-color: #fff;
+}
+.exchange ul .travel a{
+    color: #c70034;
+    padding: 0 16px;
+}
+ .num{bottom: 0 !important;}
+.code {
+	top: 50%;
+	left: 50%;
+	width: 314px;
+	height: 232px;
+	z-index: 9999;
+	display: none;
+	position: fixed;
+	margin-top: -116px;
+	margin-left: -157px;
+	background-color: #fff;
+}
+.code_tit {
+	overflow: hidden;
+	padding: 9px 20px;
+	line-height: 24px;
+	background-color: #f7f7f7;
+	border-bottom: 1px solid #e5e5e5;
+}
+.code_tit p {
+	float: left;
+	color: #666;
+	font-size: 16px;
+	font-weight: 600;
+}
+.code_tit .close {
+	float: right;
+	color: #ccc;
+	text-align: center;
+	line-height: 24px;
+	font-size: 20px;
+	font-family: "微软雅黑";
+}
+.code_tit .close:hover {
+	color: #666 !important;
+}
+.bg {
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 999;
+	display: none;
+	position: fixed;
+	background-color: rgba(0,0,0,.3);
+}
+.code_main {
+	text-align: center;
+}
+.code_main h1 {
+	font-weight: 600;
+	font-size: 14px;
+	line-height: 22px;
+	padding-top: 32px;
+}
+.code_main p {
+	font-size: 12px;
+	line-height: 20px;
+	padding-top: 24px;
+}
+.code_bottom {
+	padding-top: 34px;
+	text-align: center;
+}
+.code_bottom button {
+	margin: 0 11px;
+	border:none;
+	background: none;
+	width: 88px;
+	height: 34px;
+	font-size: 14px;
+	line-height: 34px;
+	border: 1px solid #ddd;
+	border-radius: 4px;;
+}
+.code_bottom .red {
+	color: #fff;
+	background-color: #e63547;
+	border: 1px solid #e63547;
+}
+#jifen_ul li{
+	font: 14px/1.5 "Helvetica Neue",Helvetica,Arial,"Microsoft Yahei","Hiragino Sans GB","Heiti SC","WenQuanYi Micro Hei",sans-serif;
+}
+</style>
+<include file="public/header" w="w1224"/>
+<div class="content">
+    	<div class="main">
+        	<div class="exchange" style="border-top: 1px solid #ddd;border-bottom: 1px solid #ddd;padding-left:0;">
+                <ul id="jifen_ul">
+                    <li id="cate1" style="width:100px;text-align:left;height:30px;line-height:30px;background-color:#f3f3f3;">
+                        <a style="color:#999;" href="javascript:;">积分兑换:</a>
+                    </li>
+                    <li <if condition="$type eq 'goods'"> class="travel"</if> style="height:30px;line-height:30px;">
+                        <a href="{:U('Home/Goods/coupon')}">商品</a>
+                    </li>
+                    <li <if condition="$type eq 'coupon'"> class="travel"</if> style="height:30px;line-height:30px;">
+                        <a href="{:U('Home/Goods/coupon',array('type'=>'coupon'))}">优惠券</a>
+                    </li>
+                 </ul>
+            </div>
+        	<if condition="$type eq 'goods'">
+        		<div class="exchange" style="border-bottom: 1px solid #ddd;padding-left:0;">
+	                <ul id="jifen_ul">
+	                    <li <if condition="$Think.get.id eq ''">class="travel"</if> id="cate" style="width:100px;text-align:left;height:30px;line-height:30px;background-color:#f3f3f3;">
+	                        <a style="color:#999;" href="javascript:;">全部分类:</a>
+	                    </li>
+	                    <volist name="goods_category" id="gc">
+	                        <li <if condition="$Request.param.id eq $gc['id']">class="travel"</if> style="height:30px;line-height:30px;">
+	                            <a href="{:U('Home/Goods/coupon',array('id'=>$gc['id']))}">{$gc['name']}</a>
+	                        </li>
+	                    </volist>
+	                 </ul>
+	            </div>
+        	</if>
+            <div class="bdnr">
+            	<if condition="$type eq 'goods'">
+            		<div class="jffw">
+	                    <div id="range" style="display:inline-block;">
+	                        积分范围：
+	                        <input type="text" class="bt_" name="minValue" id="minValue" value="{$Request.param.minValue}"> -
+	                        <input type="text" class="bt_" name="maxValue" id="maxValue" value="{$Request.param.maxValue}">
+	                        <button type="button" id="selectBtn" onclick="search();"><i class="icon-key"></i>查找</button>
+	                    </div>
+	                    兑换方式：
+	                    <select style=" padding:0 5px;" name="brandType" id="brandType">
+	                         <option value="0">全部</option>
+	                         <option value="1" <if condition="$Request.param.brandType eq 1">selected="selected"</if>>积分+金额</option>
+	                         <option value="2" <if condition="$Request.param.brandType eq 2">selected="selected"</if>>全积分</option>
+	                    </select>　　
+	                    <input name="is_new" type="checkbox" <if condition="$Request.param.is_new eq 1">checked="checked"</if> value="1" id="is_new"> 新品　　
+	                    <input name="exchange" type="checkbox" <if condition="$Request.param.exchange eq 1">checked="checked"</if> value="" id="exchange"> 我能兑换的商品　　
+	                    <!--<input name="" type="checkbox" value="" id="memberShip"> 会员专享-->
+	                    <input name="cat_id" id="cat_id" value="{$Request.param.id}" type="hidden" />　
+	                    <div class="ysp" id="totlePage">共{$goods_list_count}个商品
+	                        <a class="prepage" href="javascript:void(0);" onclick="prePagination();">&lt;</a> 
+	                        <span><em id="pageIndex">{$nowPage}</em>/<em id="pageCount">{$totalPages}</em></span>
+	                        <a class="nextpage" href="javascript:void(0);" onclick="nextPagination();">&gt;</a>
+	                    </div>
+	                </div>
+            	</if>
+                <div class="jfxq">
+                	<if condition="$type eq 'goods'">
+                	<!--商品-->
+                	<ul id="goods_ul" style="margin-left: -10px;">
+                        <volist name="goods_list" id="goods">
+                    	<div id="jfdhsp">
+                            <li style="width: 366px;padding: 19px 11px;border: 1px solid #dddddd;margin-left: 10px;">
+                                <p class="p1" style="float:left;width:160px;height: 160px;margin-top:0;">
+                                    <a target="_blank" href="{:U('Home/Goods/goodsInfo',array('id'=>$goods['goods_id']))}">
+                                        <img style="width:160px;height: 160px;" src="{$goods['goods_id']|goods_thum_images=160,160}">
+                                    </a>
+                                </p>
+                                <div style="margin-left: 174px;">
+                                	<p style="line-height: 17px;margin-bottom: 16px;height: 34px;    overflow: hidden;white-space: normal;display: -webkit-box;-webkit-line-clamp: 2;text-overflow: ellipsis;-webkit-box-orient: vertical;" class="p2">
+	                                    <a style="line-height: 17px;color:#333333;" target="_blank" href="{:U('Home/Goods/goodsInfo',array('id'=>$goods['goods_id']))}">{$goods['goods_name']}</a>
+	                                </p>
+	                                <p style="line-height: 17px;padding-bottom: 16px;font-size: 12px;color:#666;">参考价:<del>{$goods['shop_price']}</del></p>
+	                                <php>
+	                                	$price=$goods['shop_price']-$goods['exchange_integral']/$point_rate;
+	                                	if($price>0){
+	                                		$str='￥'.number_format($price,2,'.','').'+'.$goods['exchange_integral'].'积分';
+	                                	}else{
+	                                		$points=$goods['shop_price']*$point_rate;
+	                                		$points=ceil($points/1);
+	                                		$str=$points.'积分';
+	                                	}
+	                                </php>
+	                                <p style="line-height: 17px;padding-bottom: 16px;font-size: 12px;color:#666;">换购价:<span class="lx1" style="font-size: 16px;color: #c9181f;">{$str}</span></p>
+	                                <p class="p4" style="line-height: 24px;">
+	                                  <!--<span class="lx3">¥</span>
+	                                    <span class="lx1">{$goods['shop_price']-$goods['exchange_integral']/$point_rate}</span>
+	                                    <span class="lx4">+</span>
+	                                    <span class="lx1">{$goods['exchange_integral']}</span>-->
+	                                    <span style="color:#2f8fdb;">{$goods.sales_sum}人</span>
+	                                    <span class="lx4">换购</span>
+	                                  <a style="line-height:22px;height: 22px;width: 68px;border: 1px solid #c9181f;background: none;color: #c9181f;border-radius: 4px;" target="_blank" href="{:U('Home/Goods/goodsInfo',array('id'=>$goods['goods_id']))}">立即兑换</a>
+	                                </p>
+                                </div>
+                            </li>
+                        </div>
+                        </volist>
+                    </ul>
+                    <else/>
+                    <!--优惠券-->
+                    <ul id="coupon_ul" style="margin-left: -10px;">
+                    	<div id="jfdhsp">
+                    		<volist name="list" id="vo">
+                    			<li style="width: 388px;height:148px;padding:0;border: 1px solid #dddddd;margin-left: 10px;">
+	                                <div style="background-color:#53d4b8;padding: 10px;float:left;">
+	                                	<div style="border: 1px dashed #fff;width: 178px;height: 126px;padding-left: 20px;">
+	                                		<div style="height: 90px;line-height: 90px;overflow: hidden;">
+	                                			<p style="font-size: 18px;color: #fff;float: left;line-height: 90px;width: 112px;margin-top: 0;font-family: '微软雅黑';">￥<span style="font-size: 60px;color: #fff;font-family: Impact;"><php>echo round($vo['money'],2);</php></span></p>
+	                                			<span style="font-size: 18px;line-height:120px;color: #fff;float: left;font-family: '微软雅黑';">优惠券</span>
+	                                		</div>
+	                                		<div style="font-size: 14px;color: #fff;line-height: 30px;">单笔订单满<php>echo round($vo['condition'],2);</php>元使用</div>
+	                                	</div>
+	                                </div>
+	                                <div style="padding: 0 15px;margin-left: 220px;">
+	                                	<p style="line-height: 17px;padding-top:22px;font-size: 14px;text-align: center;margin-top: 0;">{$vo.name}</p>
+	                                	<div style="text-align: center;padding-top: 22px;"><p style="line-height: 17px;font-size: 14px;margin-top: 0;display: inline-block;"><span style="float:left;font-size: 18px;color: #c8141d;font-family: '微软雅黑';padding-right: 4px;">{$vo.points}</span>积分</p></div>
+	                                	<button onclick="comfir_coupon('{$vo['id']}','{$vo['points']}')" style="border: none;background: none;width: 136px;height: 26px;line-height: 26px;border:1px solid #c8141d;color: #c8141d;text-align: center;font-size: 12px;border-radius: 4px;margin-top: 22px;;">立即兑换</button>
+	                                </div>
+	                            </li>
+                    		</volist>
+                        </div>
+                    </ul>
+                    </if>
+                </div>
+                <div class="djs">
+					{$page}
+               </div>
+            </div>
+        </div>
+    </div>
+    
+    <div  class="bg"></div>
+    <div class="code">
+		<div class="code_tit"><p>提示</p><a class="close icon-remove" href="javascript:;">X</a></div>
+		<div class="code_main">
+			<h1 id="points"></h1>
+			<p>兑换后优惠券将放入您的个人中心里面</p>
+			<div class="code_bottom"><button id="quxiao">取消</button><button class="red" onclick="exchange_coupon()" >确定</button></div>
+		</div>
+		<input type="hidden" id="coupon_id" name="coupon_id" value="" />
+	</div>
+<include file="public/sidebar_cart" />
+<include file="public/footer" />
+<script>
+    $(document).ready(function(){
+        //切换兑换方式
+        $('#brandType').change(function(){
+            search();
+        });
+        //选中新品
+        $("#is_new").bind("click", function () {
+            search();
+        });
+        //用户能买的商品
+        $("#exchange").bind("click", function () {
+            search();
+        });
+    })
+	function comfir_coupon(cid,points){
+		$('#points').html('确定使用'+points+'积分兑换？');
+		$('.bg').show();
+		$('.code').show();
+		$('#coupon_id').val(cid);
+	}
+	function exchange_coupon(){
+		var coupon_id=$('#coupon_id').val();
+		$.ajax({
+			url:"{:U('Home/Goods/exchange_coupon')}",
+			type:"post",
+			data:{coupon_id:coupon_id},
+			dataType:"json",
+			success:function(data){
+				$('.bg').hide();
+				$('.code').hide();
+				if(data.flag<0){
+					layer.alert(data.message, {icon: 2});
+				}else{
+					layer.alert(data.message, {icon: 1});
+				}
+			}
+		});
+	}
+	$(".close,#quxiao").click(function(){
+		$('.bg').hide();
+		$('.code').hide();
+	});
+    //搜索
+    function search() {
+        var minValue = parseInt($('#minValue').val());//积分起始范围
+        var maxValue = parseInt($('#maxValue').val());//积分截止范围
+        var cat_id = $('#cat_id').val();//商品分类id
+        var brandType = $('#brandType').find("option:selected").val();
+        var url = "/index.php?m=Home&c=goods&a=coupon";
+
+        if($('#minValue').val() != ''){
+            if(!isPositiveNum(minValue)){
+                layer.alert('范围有误', {icon: 2});
+                return false;
+            }else{
+                url += "&minValue="+minValue;
+            }
+        }
+
+        if($('#maxValue').val() != ''){
+            if(!isPositiveNum(maxValue)){
+                layer.alert('范围有误', {icon: 2});
+                return false;
+            }else{
+                url += "&maxValue="+maxValue;
+            }
+        }
+
+        if($('#minValue').val() != '' && $('#maxValue').val() != '' && maxValue < minValue){
+            layer.alert('范围有误', {icon: 2});
+            return false;
+        }
+
+        if(cat_id!=0 && cat_id!=''){
+            url += "&id="+cat_id;
+        }
+
+        if(brandType!=''){
+            url += "&brandType="+brandType;
+        }
+
+        if($("#is_new").is(":checked")){
+            url += "&is_new="+1;
+        }
+        if($("#exchange").is(":checked")){
+            url += "&exchange="+1;
+        }
+
+        window.location.href=url;
+    }
+
+    //检查是否为正整数
+    function isPositiveNum(s)
+    {
+        var re = /^\d+$/;
+        return re.test(s);
+    }
+
+</script>
+</body>
+</html>

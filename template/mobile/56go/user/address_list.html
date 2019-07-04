@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+<title>收货地址-{$tpshop_config['shop_info_store_title']}</title>
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/style.css">
+<script type="text/javascript" src="__STATIC__/photoClip/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="__STATIC__/js/flexible.js"></script>
+<script type="text/javascript" src="__STATIC__/js/jquery.form.js"></script>
+<script src="__PUBLIC__/js/layer/layer.js"></script>
+<script src="__PUBLIC__/js/global.js"></script>
+</head>
+	<body>
+		<div class="main">	
+			<volist name="lists" id="list">  
+				<div class="address_item">
+					<if condition="$Request.param.source eq 'cart2'">
+						<a href="{:U('Mobile/Cart/cart2',array(address_id=>$list['address_id'],type=>$Request.param.type))}">
+							<div class="top">
+								<h1 class="f28">{$list.consignee}<span>{$list.mobile}</span></h1>
+								<p class="f22">{$region_list[$list['province']]['name']}，{$region_list[$list['city']]['name']}，{$region_list[$list['district']]['name']}，{$list.address}</p>
+							</div>
+						</a>
+					<else/>
+						<div class="top">
+							<h1 class="f28">{$list.consignee}<span>{$list.mobile}</span></h1>
+							<p class="f22">{$region_list[$list['province']]['name']}，{$region_list[$list['city']]['name']}，{$region_list[$list['district']]['name']}，{$list.address}</p>
+						</div>
+					</if>
+					<div class="bottom">
+						<div class="add_left f22">
+							<div class="add_input_box">
+								<input type="radio" date-addressid="{$list['address_id']}" class="add_input" name="set_address" id="address{$list['address_id']}" <if condition="$list[is_default] eq 1">checked</if> name="default"/><label for="address{$list['address_id']}"></label>
+							</div>
+							<span class="default f22">设为默认</span>
+						</div>
+						<div class="add_right">
+							<a href="{:U('/Mobile/User/edit_address',array('id'=>$list[address_id],'source'=>$Request.param.source,'type'=>$Request.param.type))}" class="f22 add_edit">编辑</a>
+							<a href="javascript:void(0);" onclick="del_address('{$list['address_id']}')" class="f22 add_del">删除</a>
+						</div>
+					</div>
+				</div>
+			</volist>
+			<div class="address_btn">
+				<a href="{:U('/Mobile/User/add_address',array('source'=>$Request.param.source,'type'=>$Request.param.type))}">
+					<button type="button" class="orange_btn f28">新增收货地址</button>
+				</a>
+			</div>
+		</div>
+		<script type="text/javascript">
+			$("input[name='set_address']").change(function(){
+				var address_id=$(this).attr('date-addressid');
+				$.ajax({
+					type:"POST",
+					url:"{:U('User/ajax_et_default')}",
+					data:{id:address_id},
+					dataType:'json',
+					success:function(data){
+						if(data.status<0){
+							layer.alert(data.msg, {icon: 2});
+						}
+					}
+				});
+			});
+			function del_address(address_id){
+				layer.confirm('你确认要删除该收货地址吗？', {
+				  btn: ['确认','取消'] //按钮
+				}, function(){
+					var url="/index.php?m=Mobile&c=User&a=ajax_del_address&id="+address_id;
+				  	$.ajax({
+				  		type:"GET",
+				  		url:url,
+				  		dataType:'json',
+				  		success:function(res){
+				  			if(res.status==1){
+								layer.msg(res.msg, {
+				                    icon: 1,   // 成功图标
+				                    time: 2000 //2秒关闭（如果不配置，默认是3秒）
+				                }, function(){ // 关闭后执行的函数
+				                	location.reload();
+				                });
+							}else{
+								layer.msg(res.msg,{icon:2,time: 1000,});
+							}
+				  		}
+				  	});
+				}, function(){
+				  return false;
+				});
+			}
+		</script>
+	</body>
+</html>
+

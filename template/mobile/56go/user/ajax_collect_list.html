@@ -1,0 +1,14 @@
+<foreach name="goods_list" item="goods">
+	<li>
+		<a href="{:U('Goods/goodsInfo',array('id'=>$goods[goods_id]))}">
+			<div class="good_img"><img src="{$goods.goods_id|goods_thum_images=300,300}"></div>
+			<div class="good_con">
+				<p class="f26 good_name">{$goods.goods_name}</p>
+				<div class="good_price f22 o_color">
+					¥<span class="f32 o_color">{$goods.shop_price}</span>
+				</div>
+				<a href="{:U('User/cancel_collect',array('collect_id'=>$goods[collect_id]))}"><i class="del_ic"></i></a>
+			</div>							
+		</a>
+	</li>
+</foreach>

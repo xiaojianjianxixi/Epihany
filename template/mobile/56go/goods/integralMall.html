@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+	<title>积分商城-{$tpshop_config['shop_info_store_title']}</title>
+	<link rel="stylesheet" type="text/css" href="__STATIC__/css/style.css">
+	<script type="text/javascript" src="__STATIC__/photoClip/js/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="__STATIC__/js/flexible.js"></script>
+	<script type="text/javascript" src="__STATIC__/js/jquery.form.js"></script>
+	<script src="__PUBLIC__/js/layer/layer.js"></script>
+	<script src="__PUBLIC__/js/global.js"></script>
+</head>
+	<body>
+		<div class="main">		
+			<div class="list_style1">
+				<ul id="goods_list">
+					
+				</ul>
+			</div>
+		</div>
+		<script type="text/javascript">
+			var url="/index.php?m=Mobile&c=Goods&a=integralMall";
+			var  page = 0;
+			var  flag=true;
+			var  load_flag=true;
+			/*** ajax 提交表单 查询订单列表结果*/  
+			function ajax_goods_list()
+			{	 	
+			 	if(!flag){
+			 		/*已经到底了*/
+			 		return false;
+			 	}
+			 	if(!load_flag){
+			 		return false;
+			 	}
+			 	load_flag=false;
+				page += 1; 
+				$.ajax({
+					type : "GET",
+					url:url+"&p="+page,//+tab,
+					success: function(data)
+					{
+						if(data != ''){
+							if(page>1){
+								$("#goods_list").append(data);
+							}else{
+								$("#goods_list").empty().append(data);
+							}
+						}else{
+							flag=false;
+						}
+						load_flag=true;
+					}
+				}); 
+			}
+			ajax_goods_list();
+			$(window).scroll(function () {
+		 		var listheight = $("#goods_list").outerHeight(); 
+		 		listheight=listheight;
+			    if ($(document).scrollTop() + $(window).height() >= listheight) {
+					ajax_goods_list();
+			    }
+			});
+		</script>
+		<include file="public/footer"/>

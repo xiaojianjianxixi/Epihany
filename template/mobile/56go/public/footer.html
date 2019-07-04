@@ -1,0 +1,25 @@
+<div class="footer main">
+			<ul>
+				<li <if condition="$Think.ACTION_NAME eq 'index' and $Think.CONTROLLER_NAME eq 'Index'">class="select"</if> >
+					<a href="{:U('Mobile/Index/index')}">
+						<span class="bot_ic_home"></span>
+						<p>首页</p>
+					</a>
+				</li>
+				<li <if condition="$Think.ACTION_NAME eq 'cart' and $Think.CONTROLLER_NAME eq 'Cart'">class="select"</if> >
+					<a href="{:U('Mobile/Cart/cart')}">
+						<span class="bot_ic_cart"></span>
+						<p>购物车</p>
+					</a>
+				</li>
+				<li <if condition="$Think.ACTION_NAME eq 'index' and $Think.CONTROLLER_NAME eq 'User'">class="select"</if>>
+					<a href="{:U('Mobile/User/index')}">
+						<span class="bot_ic_user"></span>
+						<p>我的</p>
+					</a>
+				</li>
+			</ul>
+		</div>
+		<div class="footer_block"></div>
+	</body>
+</html>

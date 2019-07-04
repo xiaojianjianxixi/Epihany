@@ -1,0 +1,20 @@
+<foreach name="coupon_list" item="vo">
+	<li>
+		<div class="top">
+			<div class="coupons_txt">
+				<span class="w_color f30 rmb">¥</span>
+				<span class="f50 w_color">{$vo.money}</span>
+				<span class="w_color f22 right">优惠券</span>
+			</div>
+			<div class="f22 w_color">
+				单笔订单满{$vo.condition}元可用
+			</div>
+		</div>
+		<div class="coupons_bg">
+		</div>
+		<div class="bottom">
+			<p class="info f22">{$vo.name}</br><span class="f28 o_color">{$vo.points}</span>积分</p>
+			<a href="javascript:void(0);" class="f22 receive">点击兑换</a>
+		</div>
+	</li>
+</foreach>

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+	<title>个人中心-{$tpshop_config['shop_info_store_title']}</title>
+	<link rel="stylesheet" type="text/css" href="__STATIC__/css/style.css">
+	<script type="text/javascript" src="__STATIC__/photoClip/js/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="__STATIC__/js/flexible.js"></script>
+	<script type="text/javascript" src="__STATIC__/js/jquery.form.js"></script>
+	<script src="__PUBLIC__/js/layer/layer.js"></script>
+	<script src="__PUBLIC__/js/global.js"></script>
+<style type="text/css">
+	#clipArea {
+	    height: 100%;
+	}
+	#file,
+	#clipBtn {
+	    margin: 20px;
+	}
+	#view {
+	    margin: 0 auto;
+	    width: 300px;
+	    height: 300px;
+	}
+	.mask{z-index:1; width:100%; height:100%; background:rgba(0,0,0,0.8); display:block; position:fixed; top:0;}
+</style>
+</head>
+	<body>
+		<style>
+			.photo_input {
+			    border: 0;
+			    display: inline-block;
+			    float: left;
+			    height:1.25rem;
+			    width:50%;
+			    margin-left: 2%;
+			    font-size: 14px;
+			}
+			.photo_input {
+			    position: absolute;
+			    top:.3125rem;
+			    right:.3125rem;
+			    margin: 0;
+			    border: solid transparent;
+			    opacity: 0;
+			    filter: alpha(opacity=0);
+			    cursor: pointer;
+			}
+		</style>
+		<div class="main">	
+			<div class="user_photo_edit">
+				<div class="left f28">头 像</div>
+				<i class="arrow_right"></i>
+				<div class="right">
+					<img id="avator" src='{$user[head_pic]|default="__STATIC__/images/user68.jpg"}' style="position:absolute;top:.3125rem;right:.9375rem;">
+					<input id="fileupload" type="file" name="mypic" class="photo_input">
+				</div>	
+				
+			</div>
+			
+			<div class="user_edit_list">
+				<ul>
+					<li onclick="show_input('nickname')">
+						<a href="javascript:void(0);" >
+							<div class="left f28">用户名</div>
+							<i class="arrow_right"></i>	
+							<div class="right gray_color">{$user['nickname']}</div>
+						</a>
+					</li>
+					<li>
+						<a href="javascript:void(0);" onclick="show_input('sex')">
+							<div class="left f28">性 别</div>
+							<i class="arrow_right"></i>
+							<div class="right gray_color">
+								<switch name="user.sex">
+									<case value="0">保密</case>
+									<case value="1">男</case>
+									<case value="2">女</case>
+								</switch>
+							</div>
+						</a>
+					</li>
+					<li>
+						<a href="javascript:void(0);">
+							<div class="left f28">手 机</div>
+							<!--<i class="arrow_right"></i>	-->
+							<div class="right gray_color">{$user.mobile}</div>
+						</a>
+					</li>
+					<!--<li>
+						<a href="#">
+							<div class="left f28">邮 箱</div>
+							<i class="arrow_right"></i>	
+							<div class="right gray_color">285855745@qq.com</div>
+						</a>
+					</li>-->
+					
+				</ul>
+			</div>
+			
+			<div class="user_edit_list">
+				<ul>
+					<li onclick="show_input('password')">
+						<a href="javascript:void(0);">
+							<div class="left f28">修改密码</div>
+							<i class="arrow_right"></i>					
+						</a>
+					</li>
+					<li>
+						<a href="{:U('User/address_list')}">
+							<div class="left f28">收货地址管理</div>
+							<i class="arrow_right"></i>					
+						</a>
+					</li>
+				</ul>
+			</div>
+			<div class="address_btn">
+				<button type="button" onclick="location.href='{:U('User/logout')}'" class="orange_btn f28">安全退出</button>
+			</div>
+		</div>
+		<!-- 头像截取start -->
+		<div id="photoClip" style="display:none;position: fixed;width: 100%;height:100%;top: 0;">
+			<div id="clipArea">
+				<div id="clipBtn" class="address_btn" style="position: relative;top:71%;z-index:1;">
+				    <button type="button" class="orange_btn f28">截取</button>
+				</div>
+			</div>
+			<div style="display:none;" id="view_content" class="mask">
+				<div id="view" style="margin-top: 30%;"></div>
+				<input type="hidden" id="image" name="image" value="" />
+				<div onclick="update_headimg()" class="address_btn" style="position: relative;top: 26px;z-index: 1;">
+				    <button type="button" class="orange_btn f28">确认修改</button>
+				</div>
+			</div>
+		</div>
+		<form action="" method="post" id="upateinfo">
+			<!--修改昵称-->
+			<div id="nickname" style="display: none;height: 100%;position:fixed;top: 0;background-color: #fff;">
+				<div class="address_list_item">
+					<li>
+						<div class="left">用户名:</div>
+						<div class="right"><input name="nickname" type="text" placeholder="{$user.nickname}" class="f26"></div>
+					</li>
+				</div>
+				
+				<div class="address_btn">
+					<button type="button" onclick="update_info()" class="orange_btn f28">保&nbsp;&nbsp;存</button>
+					<button type="button" onclick="unshow_input('nickname')" class="gray_btn f28 mt_20">取消修改</button>
+				</div>
+			</div>
+			<!--修改昵称-->
+			<!--修改性别-->
+			<div  class="pop_up" id="sex" style="display:none;">
+					<div class="pop_up_box">
+					<div class="pop_tit f24">
+						性别
+					</div>
+					<div id="address" class="pop_up_item address">
+						<li>
+							<div class="left f24">
+								保密
+							</div>
+							<div class="right">
+								<input class="input_select" id="sex0" type="radio" value="0" name="sex"/>
+								<label for="sex0"></label>
+							</div>
+						</li>
+						<li>
+							<div class="left f24">
+								男
+							</div>
+							<div class="right">
+								<input class="input_select" id="sex1" type="radio" value="1" name="sex"/>
+								<label for="sex1"></label>
+							</div>
+						</li>
+						<li>
+							<div class="left f24">
+								女
+							</div>
+							<div class="right">
+								<input class="input_select" id="sex2" type="radio" value="2" name="sex"/>
+								<label for="sex2"></label>
+							</div>
+						</li>
+					</div>
+					<div class="pop_bot_btn">
+						<button type="button" onclick="update_info()" class="f28 orange">确 认</button>
+					</div>
+				</div>
+				<div class="mask" onclick="unshow_input('sex')"></div>
+			</div>
+			<!--修改性别-->
+		</form>
+		<!--修改密码-->
+		<form action="" id="pwdform" method="post">
+			<div id="password" style="display: none;height: 100%;position:fixed;top: 0;background-color: #fff;">
+				<div class="registered_box" style="margin-top: 0;">
+					<div class="login_item">
+						<label class="f28">手机号</label><input class="f28" id="mobile" type="text" name="mobile" placeholder="请输入您的手机号"/>
+					</div> 
+					<div class="login_item">
+						<label class="f28">验证码</label>
+						<input class="f28" type="text" name="mobile_code" placeholder="请输入验证码"/>
+						<button type="button" class="orange f26" onclick="send_sms_reg_code()">发送验证码</button>
+						<button type="button" class="gray f26" style="display:none;" >已发送(<span id="count_down">0</span>)</button>
+					</div> 
+					<div class="login_item">
+						<label class="f28">旧密码</label><input class="f28" name="old_password" type="password" placeholder="请输入旧密码"/>
+					</div> 
+					<div class="login_item">
+						<label class="f28">新密码</label><input class="f28" name="new_password" type="password" placeholder="请输入新密码"/>
+					</div> 
+					<div class="login_item">
+						<label class="f28">确认密码</label><input class="f28" name="confirm_password" type="password" placeholder="请输入确认密码"/>
+					</div> 
+				</div>
+				<div class="address_btn">
+					<button type="button" onclick="ajaxpassword()" class="orange_btn f28">保&nbsp;&nbsp;存</button>
+					<button type="button" onclick="unshow_input('password')" class="gray_btn f28 mt_20">取消修改</button>
+				</div>
+			</div>
+		</form>
+		<!--修改密码-->
+<script src="__STATIC__/photoClip/js/iscroll-zoom.js"></script>
+<script src="__STATIC__/photoClip/js/hammer.js"></script>
+<script src="__STATIC__/photoClip/js/lrz.all.bundle.js"></script>
+<script src="__STATIC__/photoClip/js/jquery.photoClip.js"></script>
+<script type="text/javascript">
+$("#fileupload").change(function(){
+	$('#photoClip').show();
+	$('#view_content').hide();
+    $('#clipArea').show();
+});
+function ajaxpassword(){
+	var url="/index.php?m=Mobile&c=User&a=ajaxpassword";
+	$.ajax({
+        type: "POST",
+        url: url,
+        data: $('#pwdform').serialize(),
+        dataType: "json",
+        success: function(response){
+        	if(response.ReturnCode==1){
+        		layer.msg(response.ReturnMsg,{icon: 1});
+        		setTimeout(function(){
+        			location.href='/index.php?m=Mobile&c=User&a=userinfo';
+        		},1500);
+        	}else{
+        		layer.msg(response.ReturnMsg,{icon: 2});
+        	}
+        },
+    });
+}
+// 发送手机短信
+function send_sms_reg_code(){
+    var mobile = $('#mobile').val();
+    if(!checkMobile(mobile)){
+        layer.msg('请输入正确的手机号码', {icon: 2});
+        return;
+    }
+    var url = "/index.php?m=Home&c=Api&a=send_validate_code&scene=6&type=mobile&mobile="+mobile;
+    $.get(url,function(res){
+        if(res.status == 1)
+		{
+			$('.orange').hide();
+			$('.gray').show();
+			intAs = 60; // 手机短信超时时间
+            jsInnerTimeout('count_down',intAs);
+            layer.msg(res.msg, {icon: 1});
+		}else{
+            layer.msg(res.msg, {icon: 2});
+        }
+    })
+}
+//倒计时函数
+function jsInnerTimeout(id,intAs)
+{
+    var codeObj=$("#"+id);
+    intAs--;
+    if(intAs<=-1)
+    {
+        $('.orange').show();
+		$('.gray').hide();
+        return true;
+    }
+    codeObj.text(intAs+'秒');
+    setTimeout("jsInnerTimeout('"+id+"',"+intAs+")",1000);
+};
+function show_input(type){
+	$('#'+type).show();
+}
+function unshow_input(type){
+	$('#'+type).hide();
+}
+//document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+var clipArea = new bjj.PhotoClip("#clipArea", {
+    size: [300, 300],
+    outputSize: [300, 300],
+    file: "#fileupload",
+    view: "#view",
+    ok: "#clipBtn",
+    loadStart: function() {
+        //console.log("照片读取中");
+    },
+    loadComplete: function() {
+        //console.log("照片读取完成");
+    },
+    clipFinish: function(dataURL) {
+    	//console.log(dataURL);
+    	$('#view_content').show();
+    	$('#clipArea').hide();
+        $('#image').val(dataURL);
+    }
+});
+function update_headimg(){
+	var img=$('#image').val();
+	
+	var url="/index.php?m=Mobile&c=User&a=set_head_img";
+	$.ajax({
+        type: "POST",
+        url: url,
+        data: {image:img},
+        dataType: "json",
+        success: function(response){
+        	if(response.ReturnCode==1){
+        		$("#avator").attr("src",response.Thumb);
+        	}else{
+        		layer.alert(response.ReturnMsg, {icon: 2});
+        		//alert(response.ReturnMsg);
+        	}
+        	$('#view_content').hide();
+            $('#photoClip').hide();
+        },
+    });
+}
+function update_info(){
+	var url="/index.php?m=Mobile&c=User&a=saveuserinfo";
+	$.ajax({
+        type: "POST",
+        url: url,
+        data: $('#upateinfo').serialize(),
+        dataType: "json",
+        success: function(response){
+        	if(response.ReturnCode==1){
+        		layer.msg(response.ReturnMsg, {icon: 1});
+        		setTimeout(function(){
+        			location.href='/index.php?m=Mobile&c=User&a=userinfo';
+        		},2000);
+        	}else{
+        		layer.msg(response.ReturnMsg, {icon: 2});
+        	}
+        	//location.href='/index.php?m=Mobile&c=User&a=userinfo'
+        },
+    });
+}
+</script>		
+
+<include file="public/footer"/>

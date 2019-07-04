@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+<title>评价-{$tpshop_config['shop_info_store_title']}</title>
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/style.css">
+<script type="text/javascript" src="__STATIC__/photoClip/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="__STATIC__/js/flexible.js"></script>
+<script type="text/javascript" src="__STATIC__/js/jquery.form.js"></script>
+<script src="__PUBLIC__/js/layer/layer.js"></script>
+<script src="__PUBLIC__/js/global.js"></script>
+</head>
+	<body>
+		<div class="main">
+			<form id="add_comment" method="post" enctype="multipart/form-data" onSubmit="return validate_comment()">
+				<input type="hidden" name="order_id" value="{$order_goods.order_id}">
+				<input type="hidden" name="goods_id" value="{$order_goods.goods_id}">
+				<input type="hidden" name="service_rank" value="5" />
+				<input type="hidden" name="deliver_rank" value="5" />
+				<div class="evaluation_item m-b15">
+					<div class="middel order_style">
+						<div class="good_img"><img src="{$order_goods.goods_id|goods_thum_images=200,200}"></div>
+						<div class="good_con">
+							<p class="f24 good_name">{$order_goods.goods_name}</p>
+							<div class="good_price f24 o_color">
+								¥{$order_goods.member_goods_price}
+							</div>
+							<div class="good_tip gray_color f22">
+								{$order_goods.spec_key_name}
+							</div>
+						</div>	
+					</div>
+					<div class="eva_score">
+						<div class="left f24">
+							给商品评分
+						</div>
+						<div class="starability-container">
+							<ul class="starability-basic">
+								<input type="radio" id="rate5-1" name="goods_rank" checked value="5">
+								<label for="rate5-1" title="Amazing"></label>
+								<input type="radio" id="rate4-1" name="goods_rank" value="4">
+								<label for="rate4-1" title="Very good"></label>
+								<input type="radio" id="rate3-1" name="goods_rank" value="3">
+								<label for="rate3-1" title="Average"></label>
+								<input type="radio" id="rate2-1" name="goods_rank" value="2">
+								<label for="rate2-1" title="Not good"></label>
+								<input type="radio" id="rate1-1" name="goods_rank" value="1">
+								<label for="rate1-1" title="Terrible"></label>
+							</ul>
+						</div>
+					</div>
+					<div class="refund_info">			
+						<div class="refund_tit f24">
+							问题描述
+						</div>
+						<textarea id="content_13" name="content" class="refund_textarea f24" placeholder="长度在1~500字之间"></textarea>
+					</div>
+					<div class="refund_info_img">			
+						<div class="refund_tit f24">
+							上传照片
+						</div>
+						<ul>
+							<li><a href="javascript:;" class="file"><div id="fileList0" style="width:1.75rem;height:1.75rem;"><img width="1.75rem" height="1.75rem"></div><input type="file" onChange="handleFiles(this,0)" name="comment_img_file[]" accept="image/*"></a></li>
+							<li><a href="javascript:;" class="file"><div id="fileList1" style="width:1.75rem;height:1.75rem;"><img width="1.75rem" height="1.75rem"></div><input type="file" onChange="handleFiles(this,1)" name="comment_img_file[]" accept="image/*"></a></li>
+							<li><a href="javascript:;" class="file"><div id="fileList2" style="width:1.75rem;height:1.75rem;"><img width="1.75rem" height="1.75rem"></div><input type="file" onChange="handleFiles(this,2)" name="comment_img_file[]" accept="image/*"></a></li>
+							<li><a href="javascript:;" class="file"><div id="fileList3" style="width:1.75rem;height:1.75rem;"><img width="1.75rem" height="1.75rem"></div><input type="file" onChange="handleFiles(this,3)" name="comment_img_file[]" accept="image/*"></a></li>
+							<li><a href="javascript:;" class="file"><div id="fileList4" style="width:1.75rem;height:1.75rem;"><img width="1.75rem" height="1.75rem"></div><input type="file" onChange="handleFiles(this,4)" name="comment_img_file[]" accept="image/*"></a></li>
+						</ul>
+						<div class="tip gray_color f20">
+							为帮助我们更好的解决问题，请上传照片。最多5张，每张不超过5M，支持JPG、BMP、PNG
+						</div>
+					</div>
+				</div>
+				<div class="address_btn">
+					<button type="submit"  class="orange_btn f28">提 交</button>
+				</div>
+			</form>
+		</div>
+		<script>
+			function validate_comment(){
+				var content = $("#content_13").val();
+				var error = [];
+				var img_num = 0;
+				var AllImgExt=".jpg|.jpeg|.gif|.bmp|.png|";//全部图片格式类型 
+				$(".file input").each(function(index){
+					FileExt = this.value.substr(this.value.lastIndexOf(".")).toLowerCase(); 	
+					if(this.value!=''){
+					    img_num++;
+						if(AllImgExt.indexOf(FileExt+"|")==-1){
+						     error.push("第"+(index+1)+"张图片格式错误"); 
+						}
+					}    
+				});
+				if(content == ''){
+				    error.push('评价内容不能为空！');
+				}
+				if(error.length>0){
+				   alert(error);
+				   return false;
+				}else{
+				  return true;
+				}
+			}
+			window.URL = window.URL || window.webkitURL;
+			function handleFiles(obj,id) {
+				fileList = document.getElementById("fileList"+id);
+					var files = obj.files;
+					img = new Image();
+					if(window.URL){	
+						
+						img.src = window.URL.createObjectURL(files[0]); //创建一个object URL，并不是你的本地路径
+						img.width = 73;
+				    	img.height = 73;
+						img.onload = function(e) {
+							window.URL.revokeObjectURL(this.src); //图片加载后，释放object URL
+						}
+					    if(fileList.firstElementChild){
+					         fileList.removeChild(fileList.firstElementChild);
+					    } 
+						fileList.appendChild(img);
+					}else if(window.FileReader){
+						//opera不支持createObjectURL/revokeObjectURL方法。我们用FileReader对象来处理
+						var reader = new FileReader();
+						reader.readAsDataURL(files[0]);
+						reader.onload = function(e){	
+					            img.src = this.result;
+					            img.width = 73;
+					            img.height = 73;
+					            fileList.appendChild(img);
+						}
+				    }else
+				    {
+						//ie
+						obj.select();
+						obj.blur();
+						var nfile = document.selection.createRange().text;
+						document.selection.empty();
+						img.src = nfile;
+						img.width = 73;
+					    img.height = 73;
+						img.onload=function(){
+						  
+					    }
+						fileList.appendChild(img);
+				    }
+			}
+			</script>
+	</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+<title>申请售后-{$tpshop_config['shop_info_store_title']}</title>
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/style.css">
+<script type="text/javascript" src="__STATIC__/photoClip/js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="__STATIC__/js/flexible.js"></script>
+<script type="text/javascript" src="__STATIC__/js/jquery.form.js"></script>
+<script src="__PUBLIC__/js/layer/layer.js"></script>
+<script src="__PUBLIC__/js/global.js"></script>
+</head>
+	<body>
+		<div class="main">
+			<div class="order_good_list m-t15">
+				<div class="order_good_img">
+					<img src="{$goods[goods_id]|goods_thum_images=300,300}">
+				</div>
+				<div class="order_good_left">
+					<p class="f24 text_out">{$goods['goods_name']}</p>
+					<p class="order_good_tip f20 gray_color">{$goods['spec_key_name']}</p>
+				</div>
+				
+				<div class="order_good_right">
+					<p class="o_color f24">¥{$goods['member_goods_price']}</p>
+					<p class="f24">x{$goods['goods_num']}</p>
+				</div>
+			</div>
+			<form action="{:U('User/return_goods_money')}" name="return_form" id="return_form" autocomplete="off" method="post" enctype="multipart/form-data" >
+                <input type="hidden" name="order_id" value="{$order_id}" />
+                <input type="hidden" name="order_sn" value="{$order_sn}" />
+                <input type="hidden" name="goods_id" value="{$goods_id}" />
+                <input type="hidden" name="spec_key" value="{$_GET[spec_key]}" />
+                <input type="hidden" name="type" value="0"  id="tvalue" >
+				<div class="refund_check">
+					<div class="refund_tit f24">服务类型</div>
+					<if condition="$return_money eq 1">
+						<li><input type="radio" id="1" value="0" name="type" class="refund_select" checked="checked"><label for="1" class="f24">仅退款</label></li>
+					</if>
+					<if condition="$return_goods eq 1">
+						<li><input type="radio" id="2" value="2" name="type" class="refund_select"><label for="2" class="f24">退货退款</label></li>
+					</if>
+				</div>
+				<div class="refund_amount m-b15">
+					<div class="refund_amount_left f24">退款金额</div>
+					<input type="number" id="return_money" name="return_money"  placeholder="请输入退款金额" class="refund_amount_input f24">
+				</div>
+				<div class="refund_info m-b15">			
+					<div class="refund_tit f24">
+						问题描述
+					</div>
+					<textarea name="reason" id="reason" class="refund_textarea f24" placeholder="长度在1~500字之间"></textarea>
+				</div>
+				
+				
+				<div class="refund_info_img">			
+					<div class="refund_tit f24">
+						上传照片
+					</div>
+	
+					<ul>
+						<li><a href="javascript:;" class="file"><div id="fileList0" style="width:1.75rem;height:1.75rem;"><img width="1.75rem" height="1.75rem"></div><input type="file" onChange="handleFiles(this,0)" name="return_imgs[]" accept="image/*"></a></li>
+						<li><a href="javascript:;" class="file"><div id="fileList1" style="width:1.75rem;height:1.75rem;"><img width="1.75rem" height="1.75rem"></div><input type="file" onChange="handleFiles(this,1)" name="return_imgs[]" accept="image/*"></a></li>
+						<li><a href="javascript:;" class="file"><div id="fileList2" style="width:1.75rem;height:1.75rem;"><img width="1.75rem" height="1.75rem"></div><input type="file" onChange="handleFiles(this,2)" name="return_imgs[]" accept="image/*"></a></li>
+						<li><a href="javascript:;" class="file"><div id="fileList3" style="width:1.75rem;height:1.75rem;"><img width="1.75rem" height="1.75rem"></div><input type="file" onChange="handleFiles(this,3)" name="return_imgs[]" accept="image/*"></a></li>
+						<li><a href="javascript:;" class="file"><div id="fileList4" style="width:1.75rem;height:1.75rem;"><img width="1.75rem" height="1.75rem"></div><input type="file" onChange="handleFiles(this,4)" name="return_imgs[]" accept="image/*"></a></li>
+					</ul>
+					<div class="tip gray_color f20">
+						为帮助我们更好的解决问题，请上传照片。最多5张，每张不超过5M，支持JPG、BMP、PNG
+					</div>
+				</div>
+			</form>
+			<if condition="$return_goods eq 1">
+				<div class="refund_info m-b15">
+					<li>
+						<div class="refund_info_left f24 gray_color">寄回地址:</div>
+						<div class="refund_info_right f24">
+							{$return_address[$tpshop_config['shop_info_province']]}
+		                    {$return_address[$tpshop_config['shop_info_city']]}
+		                    {$return_address[$tpshop_config['shop_info_district']]}
+		    	          	{$tpshop_config['shop_info_address']} 
+						</div>
+					</li>
+					<li>
+						<div class="refund_info_left f24 gray_color">上班时间:</div>
+						<div class="refund_info_right f24">(周一致周五) 08:00-19:00 (周六日) 休息</div>
+					</li>
+					<li>
+						<div class="refund_info_left f24 gray_color">客服电话:</div>
+						<div class="refund_info_right f24">{$tpshop_config['shop_info_phone']}</div>
+					</li>
+				</div>
+			</if>
+			<div class="bottom_normal_btn">
+				<button type="button" onclick="submit_form()" class="f28 bot_button">提 交</button>
+			</div>
+					
+		</div>
+	<script type="text/javascript">
+		function submit_form(){
+			var reason = $.trim($('#reason').val());
+			if(reason == '')
+			{
+				alert('请输入退货原因');
+				return false;
+			}
+			var return_moeny = $('#return_money').val();
+			if(return_moeny <=0)
+			{
+				alert('请输入退款金额');
+				return false;
+			}
+			var error = [];
+			var img_num = 0;
+			var AllImgExt=".jpg|.jpeg|.gif|.bmp|.png|";//全部图片格式类型 
+			$(".file input").each(function(index){
+				FileExt = this.value.substr(this.value.lastIndexOf(".")).toLowerCase(); 	
+				if(this.value!=''){
+				    img_num++;
+					if(AllImgExt.indexOf(FileExt+"|")==-1){
+					     error.push("第"+(index+1)+"张图片格式错误"); 
+					}
+				}    
+			});
+			if(error.length>0){
+			   alert(error);
+			   return false;
+			}else{
+			  $('#return_form').submit();
+			}
+		}
+		window.URL = window.URL || window.webkitURL;
+		function handleFiles(obj,id) {
+			fileList = document.getElementById("fileList"+id);
+			var files = obj.files;
+			img = new Image();
+			if(window.URL){	
+				
+				img.src = window.URL.createObjectURL(files[0]); //创建一个object URL，并不是你的本地路径
+				img.width = 73;
+		    	img.height = 73;
+				img.onload = function(e) {
+					window.URL.revokeObjectURL(this.src); //图片加载后，释放object URL
+				}
+			    if(fileList.firstElementChild){
+			         fileList.removeChild(fileList.firstElementChild);
+			    } 
+				fileList.appendChild(img);
+			}else if(window.FileReader){
+				//opera不支持createObjectURL/revokeObjectURL方法。我们用FileReader对象来处理
+				var reader = new FileReader();
+				reader.readAsDataURL(files[0]);
+				reader.onload = function(e){	
+			            img.src = this.result;
+			            img.width = 73;
+			            img.height = 73;
+			            fileList.appendChild(img);
+				}
+		    }else
+		    {
+				//ie
+				obj.select();
+				obj.blur();
+				var nfile = document.selection.createRange().text;
+				document.selection.empty();
+				img.src = nfile;
+				img.width = 73;
+			    img.height = 73;
+				img.onload=function(){
+				  
+			    }
+				fileList.appendChild(img);
+		    }
+		}
+	</script>
+	</body>
+</html>

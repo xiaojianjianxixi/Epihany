@@ -1,0 +1,9 @@
+<foreach name="likelist" item="vo" key="k"> 
+	<li>
+		<a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$vo[goods_id]))}">
+			<img src="{$vo.goods_id|goods_thum_images=300,300}">
+			<p class="f24" style="overflow: hidden;white-space: normal;display: -webkit-box;-webkit-line-clamp: 1;text-overflow: ellipsis;-webkit-box-orient: vertical;">{$vo.goods_name}</p>
+			<p class="o_color f20">¥<span class="f24 o_color">{$vo.shop_price}</span></p>
+		</a>
+	</li>
+</foreach>

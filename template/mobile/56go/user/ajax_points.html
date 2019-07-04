@@ -1,0 +1,11 @@
+<foreach name="account_log" item="vo">
+	<li>
+		<div class="left">
+			<p class="f26">{$vo.desc}</p>
+			<p class="gray_color f24">{$vo.change_time|date='Y-m-d',###}</p>
+		</div>
+		<div class="right g_color f28">
+			{$vo.pay_points}
+		</div>
+	</li>
+</foreach>

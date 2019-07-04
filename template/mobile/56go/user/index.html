@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+	<title>个人中心-{$tpshop_config['shop_info_store_title']}</title>
+	<link rel="stylesheet" type="text/css" href="__STATIC__/css/style.css">
+	<script type="text/javascript" src="__STATIC__/js/jquery.js"></script>
+	<script type="text/javascript" src="__STATIC__/js/flexible.js"></script>
+</head>
+	<body>
+		<div class="main">
+			<div class="user_info_box">
+				<a href="{:U('User/userinfo')}">
+					<i class="user_setting" style=""></i>
+				</a>
+				<div class="top">
+					<div class="user_photo">
+						<img src='{$user[head_pic]|default="__STATIC__/images/user68.jpg"}'>
+					</div>
+					<div class="user_name f28">
+						{$user['nickname']}
+					</div>
+				</div>
+				<div class="bottom">
+					<ul>
+						<li>
+							<a href="{:U('User/collect_list')}">
+								<p class="f34">{$goods_collect_count}</p>
+								<p class="f20">我的收藏</p>
+							</a>
+						</li>
+						<li>
+							<a href="{:U('User/message_notice')}">
+								<p class="f34">{$message_count}</p>
+								<p class="f20">消息通知</p>
+							</a>
+						</li>
+					</ul>
+				</div>				
+			</div>
+			
+			<div class="user_order user_list">
+				<ul>
+					<li onclick="location.href='{:U('User/order_list')}';">
+						<a href="{:U('User/order_list')}">
+							<div class="left f28">我的订单</div>
+							<i class="arrow_right"></i>
+							<div class="right f24 gray_color">查看全部订单</div>						
+						</a>
+					</li>
+				</ul>
+				<div class="order_btn_four">
+					<div class="order_btn_item">
+						<a href="{:U('User/order_list',array('type'=>'WAITPAY'))}">
+							<img src="__STATIC__/images/order_ico_1.png">
+						</a>
+						<p>待付款</p>
+						<if condition="$count_sundry_status.0 gt 0">
+							<i class="order_tip">{$count_sundry_status.0}</i>
+						</if>
+					</div>
+					<div class="order_btn_item">
+						<a href="{:U('User/order_list',array('type'=>'WAITRECEIVE'))}">
+							<img src="__STATIC__/images/order_ico_2.png">
+						</a>
+						<p>待收货</p>
+						<if condition="$count_sundry_status.1 gt 0">
+							<i class="order_tip">{$count_sundry_status.1}</i>
+						</if>
+					</div>
+					<div class="order_btn_item">
+						<a href="{:U('User/comment')}">
+							<img src="__STATIC__/images/order_ico_3.png">
+						</a>
+						<p>待评价</p>
+						<if condition="$count_sundry_status.2 gt 0">
+							<i class="order_tip">{$count_sundry_status.2}</i>
+						</if>
+					</div>
+					<div class="order_btn_item">
+						<a href="{:U('User/return_goods_list')}">
+							<img src="__STATIC__/images/order_ico_4.png">
+						</a>
+						<p>退换/售后</p>
+					</div>
+
+				</div>
+			</div>
+			
+			<div class="user_list">
+				<ul>
+					<li onclick="location.href='{:U('User/coupon')}'">
+						<a href="{:U('User/coupon')}">
+							<div class="left f28">我的优惠券</div>
+							<i class="arrow_right"></i>					
+						</a>
+					</li>
+					<!--<li>
+						<a href="#">
+							<div class="left f28">我的钱包</div>
+							<i class="arrow_right"></i>					
+						</a>
+					</li>
+					<li>
+						<a href="#">
+							<div class="left f28">我的发展收益</div>
+							<i class="arrow_right"></i>					
+						</a>
+					</li>-->
+					<li onclick="location.href='{:U('User/points',array('type'=>'points'))}'">
+						<a href="{:U('User/points',array('type'=>'points'))}">
+							<div class="left f28">我的积分</div>
+							<i class="arrow_right"></i>					
+						</a>
+					</li>
+					<li onclick="location.href='{:U('User/comment',array('status'=>1))}'">
+						<a href="{:U('User/comment',array('status'=>1))}">
+							<div class="left f28">我的评价</div>
+							<i class="arrow_right"></i>					
+						</a>
+					</li>
+					<!--<li>
+						<a href="#">
+							<div class="left f28">地址管理</div>
+							<i class="arrow_right"></i>					
+						</a>
+					</li>-->
+				</ul>
+			</div>
+			
+		</div>
+	<include file="public/footer"/>

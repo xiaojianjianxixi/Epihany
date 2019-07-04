@@ -1,0 +1,35 @@
+<volist name="list" id="item">     
+	<div class="order_list_item">
+		<div class="top">
+			<span class="f22 gray_color left">订单编号:{$item.order_sn}</span>
+			<span class="f22 o_color right">
+				<if condition="$item.status eq 0">
+					申请中
+				</if>
+				<if condition="$item.status eq 1">
+					处理中
+				</if>
+				<if condition="$item.status eq 2">
+					<switch name="item.return_status">
+						<case value="1">审核通过</case>
+						<case value="2">审核失败</case>
+					</switch>
+				</if>
+			</span>
+		</div>
+		<div class="middel order_style">
+			<div class="good_img"><img src="{$item[goods_id]|goods_thum_images=300,300}"></div>
+			<div class="good_con">
+				<p class="f24 good_name">{$goodsList[$item[goods_id]]}</p>
+				<div class="good_price f24 gray_color">
+					申请时间:{$item.addtime|date="Y-m-d",###}
+				</div>
+			</div>	
+		</div>
+		<div class="bottom">
+			<div class="right">
+				<a href="{:U('User/return_goods_info',array(id=>$item['id']))}" class="order_o_btn f22">进度查询</a>
+			</div>
+		</div>
+	</div>
+</volist>

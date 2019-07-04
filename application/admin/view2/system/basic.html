@@ -1,0 +1,238 @@
+<include file="public/layout"/>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<!--以下是在线编辑器 代码 -->
+<script type="text/javascript">
+    /*
+	 * 在线编辑器相 关配置 js 
+	 *  参考 地址 http://fex.baidu.com/ueditor/
+	 */
+    window.UEDITOR_Admin_URL = "/public/plugins/Ueditor/";
+    var URL_upload = "{$URL_upload}";
+    var URL_fileUp = "{$URL_fileUp}";
+    var URL_scrawlUp = "{$URL_scrawlUp}";
+    var URL_getRemoteImage = "{$URL_getRemoteImage}";
+    var URL_imageManager = "{$URL_imageManager}";
+    var URL_imageUp = "{$URL_imageUp}";
+    var URL_getMovie = "{$URL_getMovie}";
+    var URL_home = "{$URL_home}";
+</script>
+<script type="text/javascript" charset="utf-8" src="/public/plugins/Ueditor/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="/public/plugins/Ueditor/ueditor.all.min.js"> </script>
+ <script type="text/javascript" charset="utf-8" src="/public/plugins/Ueditor/lang/zh-cn/zh-cn.js"></script>
+<script type="text/javascript">  
+  
+    var editor;
+    $(function () {
+        //具体参数配置在  editor_config.js  中
+        var options = {
+            zIndex: 999,
+            initialFrameWidth: "95%", //初化宽度
+            initialFrameHeight: 400, //初化高度
+            focus: false, //初始化时，是否让编辑器获得焦点true或false
+            maximumWords: 99999, removeFormatAttributes: 'class,style,lang,width,height,align,hspace,valign'
+            , //允许的最大字符数 'fullscreen',
+            pasteplain:false, //是否默认为纯文本粘贴。false为不使用纯文本粘贴，true为使用纯文本粘贴
+            autoHeightEnabled: true
+         /*   autotypeset: {
+                mergeEmptyline: true,        //合并空行
+                removeClass: true,           //去掉冗余的class
+                removeEmptyline: false,      //去掉空行
+                textAlign: "left",           //段落的排版方式，可以是 left,right,center,justify 去掉这个属性表示不执行排版
+                imageBlockLine: 'center',    //图片的浮动方式，独占一行剧中,左右浮动，默认: center,left,right,none 去掉这个属性表示不执行排版
+                pasteFilter: false,          //根据规则过滤没事粘贴进来的内容
+                clearFontSize: false,        //去掉所有的内嵌字号，使用编辑器默认的字号
+                clearFontFamily: false,      //去掉所有的内嵌字体，使用编辑器默认的字体
+                removeEmptyNode: false,      //去掉空节点
+                                             //可以去掉的标签
+                removeTagNames: {"font": 1},
+                indent: false,               // 行首缩进
+                indentValue: '0em'           //行首缩进的大小
+            }*/,
+        	toolbars: [
+                   ['fullscreen', 'source', '|', 'undo', 'redo',
+                       '|', 'bold', 'italic', 'underline', 'fontborder',
+                       'strikethrough', 'superscript', 'subscript',
+                       'removeformat', 'formatmatch', 'autotypeset',
+                       'blockquote', 'pasteplain', '|', 'forecolor',
+                       'backcolor', 'insertorderedlist',
+                       'insertunorderedlist', 'selectall', 'cleardoc', '|',
+                       'rowspacingtop', 'rowspacingbottom', 'lineheight', '|',
+                       'customstyle', 'paragraph', 'fontfamily', 'fontsize',
+                       '|', 'directionalityltr', 'directionalityrtl',
+                       'indent', '|', 'justifyleft', 'justifycenter',
+                       'justifyright', 'justifyjustify', '|', 'touppercase',
+                       'tolowercase', '|', 'link', 'unlink', 'anchor', '|',
+                       'imagenone', 'imageleft', 'imageright', 'imagecenter',
+                       '|', 'insertimage', 'emotion', 'insertvideo',
+                       'attachment', 'map', 'gmap', 'insertframe',
+                       'insertcode', 'webapp', 'pagebreak', 'template',
+                       'background', '|', 'horizontal', 'date', 'time',
+                       'spechars', 'wordimage', '|',
+                       'inserttable', 'deletetable',
+                       'insertparagraphbeforetable', 'insertrow', 'deleterow',
+                       'insertcol', 'deletecol', 'mergecells', 'mergeright',
+                       'mergedown', 'splittocells', 'splittorows',
+                       'splittocols', '|', 'print', 'preview', 'searchreplace']
+               ]
+        };
+        editor = new UE.ui.Editor(options);
+        editor.render("sell_service");  //  指定 textarea 的  id 为 goods_content
+    }); 
+</script>
+<!--以上是在线编辑器 代码  end-->
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title">
+            <div class="subject">
+                <h3>商城设置</h3>
+                <h5>网站全局内容基本选项设置</h5>
+            </div>
+            <ul class="tab-base nc-row">
+            	<foreach name="group_list" item="vo" key="k">
+            		<li><a href="{:U('System/index',array('inc_type'=>$k))}" <if condition="$inc_type eq $k">class="current"</if>	><span>{$vo}</span></a></li>
+            	</foreach>
+                <!--<li><a href="{:U('System/index')}"><span>商城信息</span></a></li>
+                <li><a href="{:U('System/index',array('inc_type'=>'basic'))}" class="current"><span>基本设置</span></a></li>
+                <li><a href="{:U('System/index',array('inc_type'=>'shopping'))}"><span>购物流程</span></a></li>
+                <li><a href="{:U('System/index',array('inc_type'=>'sms'))}"><span>短信设置</span></a></li>
+                <li><a href="{:U('System/index',array('inc_type'=>'smtp'))}"><span>邮件设置</span></a></li>
+                <li><a href="{:U('System/index',array('inc_type'=>'water'))}"><span>水印设置</span></a></li>
+                <li><a href="{:U('System/index',array('inc_type'=>'distribut'))}" ><span>分销设置</span></a></li>-->
+                <!--<li><a href="{:U('System/index',array('inc_type'=>'wap'))}"><span>WAP设置</span></a></li>-->
+                <!--<li><a href="{:U('System/index',array('inc_type'=>'extend'))}"><span>扩展设置</span></a></li>-->
+            </ul>
+        </div>
+    </div>
+    <!-- 操作说明 -->
+    <div class="explanation" id="explanation">
+        <div class="title" id="checkZoom"><i class="fa fa-lightbulb-o"></i>
+            <h4 title="提示相关设置操作时应注意的要点">操作提示</h4>
+            <span id="explanationZoom" title="收起提示"></span></div>
+        <ul>
+            <li>系统平台全局设置,包括基础设置、购物、短信、邮件、水印和分销等相关模块。</li>
+        </ul>
+    </div>
+    <form method="post" enctype="multipart/form-data" name="form1" action="{:U('System/handle')}">
+        <input type="hidden" name="inc_type" value="{$inc_type}">
+        <div class="ncap-form-default">
+            <dl class="row">
+                <dt class="tit">
+                    <label for="reg_integral">会员注册赠送积分</label>
+                </dt>
+                <dd class="opt">
+                    <input pattern="^\d{1,}$" id="reg_integral" name="reg_integral" value="{$config.reg_integral}" class="input-txt" type="text">
+                    <span class="err">只能输入整数</span>
+
+                    <p class="notic">会员注册赠送积分</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="file_size">附件上传大小</label>
+                </dt>
+                <dd class="opt">
+                    <select id="file_size" name="file_size">
+                        <option value="1" <if condition="$config[file_size] eq 1">selected="selected"</if>>1M</option>
+                        <option value="2" <if condition="$config[file_size] eq 2">selected="selected"</if>>2M</option>
+                        <option value="3" <if condition="$config[file_size] eq 3">selected="selected"</if>>3M</option>
+                        <option value="5" <if condition="$config[file_size] eq 4">selected="selected"</if>>5M</option>
+                        <option value="10" <if condition="$config[file_size] eq 10">selected="selected"</if>>10M</option>
+                        <option value="50" <if condition="$config[file_size] eq 50">selected="selected"</if>>50M</option>
+                        <option value="100" <if condition="$config[file_size] eq 100">selected="selected"</if>>100M</option>
+                    </select>
+
+                    <p class="notic">附件上传大小限制</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="default_storage">默认库存</label>
+                </dt>
+                <dd class="opt">
+                    <input pattern="^\d{1,}$" id="default_storage" name="default_storage" value="{$config.default_storage}" class="input-txt" type="text">
+                    <span class="err">只能输入整数</span>
+
+                    <p class="notic">添加商品的默认库存</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="default_storage">库存预警数</label>
+                </dt>
+                <dd class="opt">
+                    <input pattern="^\d{1,}$" name="warning_storage" value="{$config.warning_storage}" class="input-txt" type="text">
+                    <span class="err">只能输入整数</span>
+                    <p class="notic">库存预警,当商品库存少于库存预警数，将在商品列表页库存显示红色</p>
+                </dd>
+            </dl>
+            <if condition="$distribut_switch eq 1">
+	            <dl class="row">
+	                <dt class="tit">
+	                    <label for="distribut_need">满多少才能提现</label>
+	                </dt>
+	                <dd class="opt">
+	                    <input pattern="^\d{1,}$" name="need" id="distribut_need" value="{$config.need}" class="input-txt" type="text">
+	                    <span class="err">只能输入整数</span>
+	
+	                    <p class="notic">需超过多少才能提现金额</p>
+	                </dd>
+	            </dl>
+	            <dl class="row">
+	                <dt class="tit">
+	                    <label for="distribut_min">最少提现额度</label>
+	                </dt>
+	                <dd class="opt">
+	                    <input pattern="^\d{1,}$" name="min" id="distribut_min" value="{$config.min}" class="input-txt" type="text">
+	                    <span class="err">只能输入整数</span>
+	
+	                    <p class="notic">最少提现多少，才能体现</p>
+	                </dd>
+	            </dl>
+            </if>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="tax">发票税率</label>
+                </dt>
+                <dd class="opt">
+                    <input pattern="^(?!0+(?:\.0+)?$)(?:[1-9]\d*|0)(?:\.\d{1,2})?$" name="tax" id="tax" value="{$config.tax}" class="input-txt" type="text">%
+                    <span class="err">只能输入数字和小数</span>
+                    <p class="notic">当买家需要发票的时候就要增加[商品金额]*[税率]的费用</p>
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="tit">
+                    <label for="hot_keywords">首页热门搜索词</label>
+                </dt>
+                <dd class="opt">
+                    <input id="hot_keywords" name="hot_keywords" value="{$config.hot_keywords}" class="input-txt" type="text">
+                    <span class="err">例如:衣|手机|内衣</span>
+                    <p class="notic">商家中心右下侧显示，方便商家遇到问题时咨询</p>
+                </dd>
+            </dl>
+			<dl class="row">
+                <dt class="tit">
+                    <label for="record_no">售后服务</label>
+                </dt>
+                <dd class="opt">                    
+                    <textarea class="span12 ckeditor" id="sell_service" name="sell_service" title="">{$config.sell_service}</textarea>
+                    <span class="err" id="err_goods_content" style="color:#F00; display:none;"></span>                    
+                </dd>
+            </dl> 
+            <div class="bot"><a href="JavaScript:void(0);" class="ncap-btn-big ncap-btn-green" onclick="document.form1.submit()">确认提交</a></div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+
+</script>
+<div id="goTop">
+    <a href="JavaScript:void(0);" id="btntop">
+        <i class="fa fa-angle-up"></i>
+    </a>
+    <a href="JavaScript:void(0);" id="btnbottom">
+        <i class="fa fa-angle-down"></i>
+    </a>
+</div>
+</body>
+</html>

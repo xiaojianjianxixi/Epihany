@@ -1,0 +1,76 @@
+<include file="public/layout" />
+<body style="background-color: #FFF; overflow: auto;">
+<div id="toolTipLayer" style="position: absolute; z-index: 9999; display: none; visibility: visible; left: 95px; top: 573px;"></div>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+
+    <form class="form-horizontal" id="handleposition"   method="post">
+      
+        <input type="hidden" name="goods_id" id="goods_id" value="{$goods_id}">
+        <div class="ncap-form-default">
+            <dl class="row">
+                <dt class="tit">
+                    <label for="tastename">口味</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="tastename"  id="tastename" class="input-txt">
+                    <span class="err"></span>
+                    <p class="notic">请输入口味名称</p>
+                </dd>
+            </dl>
+
+            <div class="bot"><a href="JavaScript:void(0);" onclick="addtaste()" class="ncap-btn-big ncap-btn-green" id="submitBtn">确认提交</a></div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+        /*
+        * 添加口味
+        */
+    function addtaste()
+    {
+        var goods_id = $("#goods_id").val();
+        var tastename = $("#tastename").val();
+        if(goods_id==""){
+        layer.alert('no find goods_id', {icon: 2});
+          return false;
+        }  
+        if(tastename=="")
+        {
+          layer.alert('请输入口味名称', {icon: 2});
+          return false;
+        }
+      
+        $.ajax({
+                type:'POST',
+                url:"{:U('Admin/goods/tastelistadd_do')}",
+                data:{goods_id:goods_id,tastename:tastename},
+                dataType:'json',
+                success:function(data){
+
+                    if(data.status = 1){
+                        layer.alert(data.msg, {icon: 1});
+                        setTimeout(function(){
+                      
+                        layer.closeAll();
+
+                        window.location.replace("{:U('Admin/goods/tastelist',array('goods_id'=>$goods_id))}")
+                        },800);
+                    }else{
+                        layer.alert(data.msg, {icon: 2});
+                        setTimeout(function(){
+
+                        window.location.replace("{:U('Admin/goods/tastelist',array('goods_id'=>$goods_id))}")
+                        },800);
+                    }
+
+  
+                                                
+                }
+        });
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+	<title>{$tpshop_config['shop_info_store_title']}</title>
+	<link rel="stylesheet" type="text/css" href="__STATIC__/css/style.css">
+	<script type="text/javascript" src="__STATIC__/js/jquery.js"></script>
+	<script type="text/javascript" src="__STATIC__/js/TouchSlide.1.1.js"></script>
+	<script type="text/javascript" src="__STATIC__/js/flexible.js"></script>
+</head>
+<style>
+.index_head{
+	padding:.28125rem .3125rem;
+	height:1.375rem;
+	width:10rem;
+	position:fixed;
+	top:0;
+	left:50%;
+	margin-left:-5rem;
+	z-index:999;
+}
+.start{
+  	background:-webkit-gradient(linear, 0 0, 0 100%, from(rgba(0,0,0,.0)), to(rgba(0,0,0,.3)));
+    background:-webkit-linear-gradient(to top, rgba(0,0,0,.0), rgba(0,0,0,.3));
+    background:-moz-linear-gradient(to top, rgba(0,0,0,.0), rgba(0,0,0,.3));
+    background:-o-linear-gradient(to top, rgba(0,0,0,.0), rgba(0,0,0,.3));
+    background:linear-gradient(to top, rgba(0,0,0,.0), rgba(0,0,0,.3));
+}
+.index_search{
+	height:.8125rem;
+	width:8.3125rem;
+	background:rgba(255,255,255,.85);
+	border-radius:.40625rem;
+	text-indent:.9375rem;
+	display:inline-block;
+	float:left;
+}
+.input_box{
+	position:relative;
+}
+.message_box{
+	display:inline-block;
+	float:right;
+}
+.message_box .message_ic{
+	background:url(__STATIC__/images/home_ic_message.png) no-repeat top center;
+	background-size:.5rem auto;
+	width:.5rem;
+	height:.5rem;
+	margin:0 auto;
+}
+.message_box p{
+	line-height:.3rem;
+}
+</style>
+	<body>
+	<div class="main">
+		<div class="index_head start">
+			<div class="input_box" onclick="location.href='/index.php?m=Mobile&c=Goods&a=search_56go'">
+				<input type="text"  class="index_search f24" placeholder="请输入商品名"/>
+				<label class="search_ic"></label>
+			</div>
+			<a href="{:U('Mobile/User/message_notice')}">
+				<div class="message_box">
+					<i class="message_ic"></i>
+					<p class="f16 w_color">信息</p>
+					<if condition="$message_count gt 0">
+						<i style="top: 0.25rem;background: red;width: 0.15rem;height: 0.15rem;line-height: .42625rem;border-radius: 0.1rem;position: absolute;right: .3rem;text-align: center; color: #fff;font-size: .25rem;"></i>
+					</if>
+				</div>
+			</a>
+		</div>	
+	</div>
+	<div id="focus" class="focus main">
+		<div class="hd">
+			<ul></ul>
+		</div>
+		<div class="bd">
+			<ul>
+				<adv pid="51318" item="v3">
+					<li><a href="{$v3[ad_link]}"><img src="{$v3[ad_code]}" title="{$v3[title]}" style="{$v3[style]}" /></a></li>
+				</adv>
+			</ul>
+		</div>
+	</div>
+	<script type="text/javascript">
+		TouchSlide({ 
+			slideCell:"#focus",
+			titCell:".hd ul", //开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+			mainCell:".bd ul", 
+			effect:"leftLoop", 
+			autoPlay:true,//自动播放
+			autoPage:true //自动分页
+		});
+	</script>
+		
+	<div class="home_btn main">
+		<ul>
+			<li>
+				<a href="{:U('Mobile/Goods/categoryList')}">
+					<img src="__STATIC__/images/home_btn_1.png">
+					<p class="f22">全部分类</p>
+				</a>
+			</li>
+			<li>
+				<a href="{:U('Goods/integralcoupon')}">
+					<img src="__STATIC__/images/home_btn_2.png">
+					<p class="f22">积分商城</p>
+				</a>
+			</li>
+			<li>
+				<a href="{:U('Cart/cart')}">
+					<img src="__STATIC__/images/home_btn_3.png">
+					<p class="f22">购物车</p>
+				</a>
+			</li>
+			<li>
+				<a href="{:U('User/index')}">
+					<img src="__STATIC__/images/home_btn_4.png">
+					<p class="f22">个人中心</p>
+				</a>
+			</li>
+		</ul>
+	</div>
+	
+	<div class="ad_first main">
+		<ul>
+			<adv pid="51322" item="v2" limit="2">
+				<li>
+					<a href="{$v2[ad_link]}"><img src="{$v2[ad_code]}" title="{$v2[title]}" style="{$v2[style]}" /></a>
+				</li>
+			</adv>
+		</ul>
+	</div>
+	
+	<div class="home_rec main">
+		<div class="home_tit">
+			<h1 class="f26">推荐<span class="rec_ic"></span></h1>
+		</div>
+		<adv pid="51319" item="v2" limit="1">
+			<div class="left">
+				<a href="{$v2[ad_link]}"><img src="{$v2[ad_code]}" title="{$v2[title]}" style="{$v2[style]}" /></a>
+			</div>
+		</adv>
+		<div class="right">
+			<adv pid="51319" key="recommend" item="v1" limit="3" >
+				<if condition="$recommend neq 0">
+					<li>
+						<a href="{$v1[ad_link]}"><img src="{$v1[ad_code]}" title="{$v1[title]}" style="{$v1[style]}" /></a>
+					</li>
+				</if>
+			</adv>
+		</div>
+	</div>
+	
+	<div class="home_new main">
+		<div class="home_tit">
+			<h1 class="f26">新品<span class="new_ic"></span></h1>
+		</div>
+		<ul>
+			<adv pid="51320" key="recommend" item="v0" limit="4" >
+				<li>
+					<a href="{$v0[ad_link]}"><img src="{$v0[ad_code]}" title="{$v0[title]}" style="{$v0[style]}" /></a>
+				</li>
+			</adv>
+		</ul>
+	</div>
+	
+	<div class="home_like main">
+		<p class="tit f24"><i class="ic_like"></i><span class="txt">猜你喜欢</span></p>
+		<ul id="ajax_return">
+			
+		</ul>
+	</div>
+	<script language="javascript">
+		var  page = 0;
+		var  flag=true;
+		var  load_flag=true;
+		 ajax_like_list();
+		 /*** ajax 提交表单 查询订单列表结果*/  
+		 function ajax_like_list()
+		 {	 	
+		 	if(!flag){
+		 		/*已经到底了*/
+		 		return false;
+		 	}
+		 	if(!load_flag){
+		 		return false;
+		 	}
+		 	load_flag=false;
+	 		page += 1; 	
+			$.ajax({
+				type : "GET",
+				url:"/index.php?m=Mobile&c=Index&a=ajaxlikelist&page="+page,//+tab,
+				success: function(data)
+				{
+					if(data != ''){
+						$("#ajax_return").append(data);
+					}else{
+						flag=false;
+					}
+					load_flag=true;
+				}
+			}); 
+		 }
+		 $(window).scroll(function () {
+	 		var listheight = $("#ajax_return").outerHeight(); 
+	 		listheight=listheight;
+		    if ($(document).scrollTop() + $(window).height() >= listheight) {
+				ajax_like_list();
+		    }
+		}); 
+	</script>
+	<include file="public/footer"/>

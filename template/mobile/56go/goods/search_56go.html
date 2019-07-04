@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+	<title>搜索-{$tpshop_config['shop_info_store_title']}</title>
+	<link rel="stylesheet" type="text/css" href="__STATIC__/css/style.css">
+	<script type="text/javascript" src="__STATIC__/js/jquery.js"></script>
+	<script type="text/javascript" src="__STATIC__/js/flexible.js"></script>
+</head>
+	<body>
+		<div class="search_box main">
+			<form id="search_form" action="{:U('Mobile/Goods/search_56go')}" method="post">
+				<input class="search_input2" name="keyword" type="text" placeholder="请输入商品名称"/>		
+				<i class="search_ic"></i>
+				<div class="search_btn f22" onclick="$('#search_form').submit();">搜索</div>
+			</form>
+		</div>
+		<php>
+			if($tpshop_config['basic_hot_keywords']){
+				$list=explode('|',$tpshop_config['basic_hot_keywords']);
+			}
+		</php>
+		<div class="main">
+			<div class="search_con">
+				<h1 class="f24">热门搜索</h1>
+				<ul>
+					<volist name="list" id="vo">
+						<li><a href="{:U('Mobile/Goods/search_56go',array(keyword=>$vo))}">{$vo}</a></li>
+					</volist>
+				</ul>
+			</div>		
+		</div>		
+	</body>
+</html>
